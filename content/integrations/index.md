@@ -47,6 +47,3 @@ The pages below walk through how to integrate, what to expect, and how to troubl
     <li><%= link_to i[:integration_title], i.path %></li>
 <% end %>
 </ul>
-
-
-
