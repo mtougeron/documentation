@@ -13,7 +13,20 @@ end
 
 desc 'Build documentation site'
 task :compile do
-  sh 'bundle exec nanoc compile'
+  # add --verbose to the command to get a table like this on each build
+  #                 | count    min    avg    max     tot
+  # ----------------+-----------------------------------
+  #             erb |   747  0.00s  0.01s  0.53s   8.57s
+  #        kramdown |   318  0.00s  0.01s  0.06s   1.92s
+  # colorize_syntax |    57  0.00s  0.02s  0.51s   1.12s
+  #    autoprefixer |     2  0.88s  0.93s  0.99s   1.86s
+  #            sass |     2  0.06s  1.15s  2.24s   2.30s
+  sh 'bundle exec nanoc compile'# --verbose'
+end
+
+desc 'Get Integration Items from GitHub'
+task :updategh do
+  sh 'bundle exec nanoc update -y'
 end
 
 task :view do
@@ -25,10 +38,10 @@ task predeploy: [:clean, :compile, :checks]
 
 namespace :release do
   desc 'Build and release the site to prod (http://docs.datadoghq.com)'
-  task prod: [:clean, :compile, :"deploy:prod"]
+  task prod: [:clean, :updategh, :compile, :"deploy:prod"]
 
   desc 'Build and release the site to staging (http://docs-staging.datadoghq.com)'
-  task staging: [:clean, :compile, :"deploy:staging"]
+  task staging: [:clean, :updategh, :compile, :"deploy:staging"]
 end
 
 namespace :deploy do
@@ -114,6 +127,7 @@ desc 'Run Guard, autobuilds/reloads site'
 task :guard do
   puts 'Auto Compiling and Live Reloading.'
   puts 'Be Patient...the magic takes a few seconds to start'
+  sh 'bundle exec nanoc update -y'
   sh 'bundle exec guard'
 end
 

@@ -3,7 +3,12 @@ require 'base64'
 require 'csv'
 require 'json'
 
+require './lib/default.rb'
+
 def get_integration_items_from_git
+  # ghintegrations = @items.select{ |item| item[:kind] == 'coreintegration'}
+  # puts ghintegrations.inspect
+  start = Time.now
   output = []
   if ENV.has_key?('github_personal_token')
     git_repos = [
@@ -14,9 +19,11 @@ def get_integration_items_from_git
       ]
 
     git_repos.each do |repo|
+      startrepo = Time.now
       metadata = ''
       integrationlist = $client.contents(repo['name'], :path => "/")
       integrationlist.each do |integration|
+        startintegration = Time.now
         if integration.type == 'dir'
           parsedintegration = {
             'path'=>integration['path']
@@ -46,13 +53,17 @@ def get_integration_items_from_git
             output.push(parsedintegration)
           end
         end
+        puts "Processed Integration #{integration['path']}: #{(Time.now - startintegration)*1000} ms"
       end
+      puts "Processed Repo #{repo['name']}: #{(Time.now - startrepo)*1000} ms"
     end
   end
+  print_profile("*****Get All Integrations", start)
   return output
 end
 
 def parse_readme_from_git(repo, path)
+  start = Time.now
   validsections = %w{Overview Installation Configuration Validation Troubleshooting Compatibility}
   harray={}
   readmefile = Base64.decode64($client.contents(repo, :path => path).content)
@@ -69,6 +80,7 @@ def parse_readme_from_git(repo, path)
       end
     end
   end
+  print_profile("Parsed readme for #{path}", start)
   return harray
 end
 
@@ -111,6 +123,7 @@ return output
 end
 
 def get_units_from_git
+  startunits = Time.now
   if ENV.has_key?('github_personal_token')
     itext = $client.contents('datadog/dogweb', :path => "integration/system/units_catalog.csv").content
     unit_string = ""
@@ -138,6 +151,6 @@ def get_units_from_git
     output = "<strong>Units is auto-populated based on data from a Datadog internal repo. It will be populated when built into production.</strong>"
     # raise "Github personal token required"
   end
-
+print_profile("Get Units", startunits)
 return output
 end

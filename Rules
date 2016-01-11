@@ -14,9 +14,12 @@
 #   item, use the pattern “/about/*/”; “/about/*” will also select the parent,
 #   because “*” matches zero or more characters.
 
+
+
 require './lib/rule_helper'
 require 'octokit'
 preprocess do
+  startpre = Time.now
   create_redirect_pages
   # def rchomp(sep = $/)
   #   self.start_with?(sep) ? self[sep.size..-1] : self
@@ -78,6 +81,7 @@ preprocess do
     end
     # snippetizer(item)
   end
+  print_profile("End Pre", startpre)
 end
 
 compile 'sitemap' do
@@ -104,10 +108,12 @@ end
 # end
 
 compile '/static/css/*' do
+  startcss = Time.now
   unless item.identifier.start_with?('/static/css/_')
     filter :sass, syntax: :scss, style: :compressed
     filter :autoprefixer
   end
+  print_profile("Compile CSS #{item.identifier}", startcss)
 end
 
 compile '/static/*' do
@@ -121,6 +127,7 @@ compile '/partials/*' do
 end
 
 compile '*' do
+  startstar = Time.now
   unless item.binary? or item[:title] == 'redirect'
     filter :erb
     case item[:extension]
@@ -160,6 +167,10 @@ compile '*' do
       end
     end
 
+  end
+  starttime = (Time.now - startstar)*1000
+  if starttime > 100
+    print_profile("Compile #{item.identifier}", startstar)
   end
 end
 

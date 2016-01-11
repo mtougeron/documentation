@@ -9,6 +9,10 @@ require "video_info"
 require "nanoc/cachebuster"
 include Nanoc::Helpers::CacheBusting
 
+if ARGV.include? "--verbose"
+  $verbose = true
+end
+
 STATUS_CODES = {
   200 => '200 OK',
   201 => '201 Created',
@@ -91,4 +95,10 @@ def adroll_pixel()
   EOF
 
   return html
+end
+
+def print_profile(message, starttime)
+  if $verbose
+    puts "#{message}: #{(Time.now - starttime)*1000} ms"
+  end
 end
