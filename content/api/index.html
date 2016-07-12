@@ -19,6 +19,7 @@ kind: documentation
       <div class="btn-group api-section-links btn-group-sm">
         <a class="btn btn-default gradient" href="#authentication">Auth</a>
         <a class="btn btn-default gradient" href="#errors">Errors</a>
+        <a class="btn btn-default gradient" href="#ratelimiting">Rate Limiting</a>
         <a class="btn btn-default gradient" href="#metrics">Metrics</a>
         <a class="btn btn-default gradient" href="#events">Events</a>
         <a class="btn btn-default gradient" href="#service_checks">Checks</a>
@@ -137,6 +138,37 @@ kind: documentation
       </div>
     </div>
 
+
+    <!--
+   =====================================================================
+      Rate Limiting
+    ====================================================================
+    -->
+
+    <div class="int-anchor" id="ratelimiting"></div><a href="#ratelimiting"><h3>Rate Limiting</h3></a>
+    <div class="row">
+      <%= left_side_div %>
+        <p>
+        Some of our api end points are rate limited.  Once you exceed a certain number of requests in a certain time period we return an error.
+        </p>
+        <p>
+        For rate limited api endpoints we return headers so you can know how close you are to your limit.  And so that when you exceeded your limit, you can know when to try again.
+        </p>
+        <p>
+        Rate limits can be increased from defaults if requested.
+        </p>
+      </div>
+      <%= right_side_div %>
+        <h5>Rate Limit Headers</h5>
+        <ul>
+          <li><code>X-RateLimit-Limit</code>number of requests allowed in a time period</li>
+          <li><code>X-RateLimit-Period</code>length of time in seconds for resets (calendar aligned)</li>
+          <li><code>X-RateLimit-Remaining</code>number of allowed requests left in current time period</li>
+          <li><code>X-RateLimit-Reset</code>time in seconds until next reset</li>
+        </ul>
+      </div>
+    </div>
+
     <!--
    =====================================================================
     Metrics
@@ -152,6 +184,7 @@ kind: documentation
         <ul>
           <li>Post metrics data so it can be graphed on Datadog's dashboards</li>
           <li>Query metrics from any time period</li>
+          <li>Get list of metrics</li>
         </ul>
         <p>
           As occurs within the Datadog UI, a graph can only contain a set number of points and as the timeframe over which a metric is viewed increases, aggregation between points will occur to stay below that set number.
@@ -227,6 +260,32 @@ kind: documentation
         <h5>Example Response</h5>
         <% %w{py sh rb}.each do |f| %>
           <%= snippet_result_code_block "api-metrics-query.#{f}" %>
+        <% end %>
+      </div>
+    </div>
+    <div class="int-anchor" id="metrics-metrics"></div><a href="#metrics-metrics"><h4>Query active metrics</h4></a>
+    <div class="row">
+      <%= left_side_div %>
+        <p>
+          Get the list of actively reporting metrics from a given time.
+        </p>
+
+        <h5>Arguments</h5>
+        <ul class="arguments">
+          <%= argument("from", "seconds since the unix epoch") %>
+        </ul>
+
+      </div>
+      <%= right_side_div %>
+        <h5>Signature</h5>
+        <code>GET https://app.datadoghq.com/api/v1/metrics</code>
+        <h5>Example Request</h5>
+        <% %w{py sh rb}.each do |f| %>
+          <%= snippet_code_block "api-metrics-metrics.#{f}" %>
+        <% end %>
+        <h5>Example Response</h5>
+        <% %w{py sh rb}.each do |f| %>
+          <%= snippet_result_code_block "api-metrics-metrics.#{f}" %>
         <% end %>
       </div>
     </div>
