@@ -67,7 +67,7 @@ def show_autotoc
   if headers.length > 0
     toplevel = headers.min {|a, b| a.name[-1]<=>b.name[-1]}.name[-1].to_i
     headers = headers.map {|h| {level: h.name[-1].to_i - toplevel +1, id: h['id'], title: h.text}}
-    
+
     toc = ""
     toc+= "<li class='nav-header'>Table of Contents</li>"
     headers.each do |header|
@@ -133,36 +133,40 @@ def get_all_metrics_from_github
     reporootdir = $client.contents(repo, :path => "integration/")
 
     reporootdir.each do |intdir|
-      if intdir[:type]=="dir"
-        intdirlist = $client.contents(repo, :path => "/integration/#{intdir[:name]}")
-        intdirlist.each { |intdircontent|
-          if intdircontent[:type] == "file" && intdircontent[:name].end_with?("metadata.csv")
-            csvcontent = Base64.decode64($client.contents(repo, :path => "integration/#{intdir[:name]}/#{intdircontent[:name]}").content)
+      if network_on()
+        if intdir[:type]=="dir"
+          intdirlist = $client.contents(repo, :path => "/integration/#{intdir[:name]}")
+          intdirlist.each { |intdircontent|
+            if intdircontent[:type] == "file" && intdircontent[:name].end_with?("metadata.csv")
+              csvcontent = Base64.decode64($client.contents(repo, :path => "integration/#{intdir[:name]}/#{intdircontent[:name]}").content)
 
-            metric_string = "<table class='table'>"
-            CSV.parse(csvcontent, {:headers => true, :converters => :all}) do |row|
-              description = row['description']
-              if description.nil?
-                description = ' '
-              end
-              metric_string+= "<tr><td><strong>#{row['metric_name']}</strong><br/>(#{row['metric_type']}"
-              if row['interval'] != nil
-                metric_string += " every #{row['interval']} seconds"
-              end
-              metric_string += ")</td><td>#{description.gsub '^', ' to the '}"
-              if row['unit_name'] != nil
-                metric_string += "<br/>shown as #{row['unit_name']}"
-                if row['per_unit_name'] != nil
-                  metric_string += "/#{row['per_unit_name']}"
+              metric_string = "<table class='table'>"
+              CSV.parse(csvcontent, {:headers => true, :converters => :all}) do |row|
+                description = row['description']
+                if description.nil?
+                  description = ' '
                 end
+                metric_string+= "<tr><td><strong>#{row['metric_name']}</strong><br/>(#{row['metric_type']}"
+                if row['interval'] != nil
+                  metric_string += " every #{row['interval']} seconds"
+                end
+                metric_string += ")</td><td>#{description.gsub '^', ' to the '}"
+                if row['unit_name'] != nil
+                  metric_string += "<br/>shown as #{row['unit_name']}"
+                  if row['per_unit_name'] != nil
+                    metric_string += "/#{row['per_unit_name']}"
+                  end
+                end
+                metric_string += "</td></tr>"
               end
-              metric_string += "</td></tr>"
+              metric_string+="</table>"
+              metric_string.force_encoding('utf-8')
+              allmetrictables << {"integration" => intdir[:name], "table" =>metric_string}
             end
-            metric_string+="</table>"
-            metric_string.force_encoding('utf-8')
-            allmetrictables << {"integration" => intdir[:name], "table" =>metric_string}
-          end
-        }
+          }
+        end
+      else
+        allmetrictables << {"integration" => intdir[:name], "table" =>""}
       end
     end
     serialize_github_metrics(allmetrictables)
@@ -197,9 +201,15 @@ def get_metrics_from_git
   end
 
   begin
+    table = ""
     # if ENV.has_key?('github_personal_token')
-    ititle = @item[:git_integration_title]
-    return allmetrics.find { |h| h['integration'] == ititle}["table"]
+    if network_on()
+      ititle = @item[:git_integration_title]
+      table = allmetrics.find { |h| h['integration'] == ititle}["table"]
+    else
+      table = "If you had a faster connection you would see some metrics here"
+    end
+    return table
   rescue Exception => e
     pp "**** There was a problem getting GitHub Metrics for #{@item[:title]} ****"
     pp e
@@ -211,7 +221,7 @@ def get_units_from_git
   require 'base64'
   require 'csv'
 
-  if ENV.has_key?('github_personal_token')
+  if ENV.has_key?('github_personal_token') && network_on()
     itext = $client.contents('datadog/dogweb', :path => "integration/system/units_catalog.csv").content
     unit_string = ""
     units_by_family = Hash.new([])
@@ -351,17 +361,25 @@ def has_tag?(item, tag)
   return false if item[:tags].nil?
   item[:tags].include? tag
 end
-# def create_tag_pages(items=nil, options={})
-#       options[:tag_pattern]     ||= "%%tag%%"
-#       options[:title]           ||= options[:tag_pattern]
-#       options[:identifier]      ||= "/tags/#{options[:tag_pattern]}/"
-#       options[:template]        ||= "tag"
 
-#       tag_set(items).each do |tagname|
-#         raw_content = "<%= render('#{options[:template]}', :tag => '#{tagname}') %>"
-#         attributes  = { :title => options[:title].gsub(options[:tag_pattern], tagname) }
-#         identifier  = options[:identifier].gsub(options[:tag_pattern], tagname)
-
-#         @items << Nanoc::Item.new(raw_content, attributes, identifier, :binary => false)
-#       end
-#     end
+def network_on()
+  use_the_network = false
+  unless FileTest.exist?("slowconnection")
+    require 'speedtest'
+    bad_latency = 40
+    bad_downloadrate = 5000000
+    test = Speedtest::Test.new(
+      download_runs: 1,
+      download_sizes: [350],
+      upload_runs: 0,
+      ping_runs: 2
+    )
+    results = test.run
+    if results.latency > bad_latency && results.download_rate < bad_downloadrate
+      File.open("slowconnection", "w") {}
+    else
+      use_the_network = true
+    end
+  end
+  return use_the_network
+end

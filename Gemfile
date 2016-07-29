@@ -22,4 +22,5 @@ group :development do
   gem 'guard-rake'
   gem 'digest'
   gem 'adsf'
+  gem 'speedtest'
 end

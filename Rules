@@ -17,6 +17,8 @@
 require './lib/rule_helper'
 require 'octokit'
 preprocess do
+  network_on()
+
   create_redirect_pages
   # def rchomp(sep = $/)
   #   self.start_with?(sep) ? self[sep.size..-1] : self
