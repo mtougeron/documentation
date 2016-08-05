@@ -61,9 +61,12 @@ To validate that the integration is working, run ```datadog-agent info```. You s
 
 # Metrics
 
-<%= get_metrics_from_git()%>
+Many of these metrics are documented in further detail as part of Datadog's
+[WiredTager](https://www.datadoghq.com/blog/monitoring-mongodb-performance-metrics-wiredtiger/)
+and [MMAP](https://www.datadoghq.com/blog/monitoring-mongodb-performance-metrics-mmap/) monitoring
+guides.
 
-Note: many of these metrics are described in the [MongoDB Manual 3.0](https://docs.mongodb.org/manual/reference/command/dbStats/)
+<%= get_metrics_from_git()%>
 
 [1]: https://github.com/DataDog/dd-agent/blob/master/conf.d/mongo.yaml.example
 [2]: https://github.com/DataDog/dd-agent/blob/master/checks.d/mongo.py
