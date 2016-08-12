@@ -39,12 +39,12 @@ end
 namespace :deploy do
   desc 'Deploy to prod S3 bucket; Should be used by `rake release:prod`'
   task :prod do
-    sh('cd output && s3cmd -c ~/.docs-deploy.prod sync --delete-removed --no-mime-magic --guess-mime-type . s3://docs.datadoghq.com')
+    sh('cd output && s3cmd -c ~/.docs-deploy.prod sync --delete-removed --no-mime-magic --guess-mime-type . s3://datadog-docs-prod')
   end
 
   desc 'Deploy to staging S3 bucket; Should be used by `rake release:staging`'
   task :staging do
-    sh("cd output && s3cmd -c ~/.docs-deploy.prod sync --delete-removed --no-mime-magic --guess-mime-type . s3://docs-staging.datadoghq.com")
+    sh("cd output && s3cmd -c ~/.docs-deploy.prod sync --delete-removed --no-mime-magic --guess-mime-type . s3://datadog-docs-staging")
   end
 end
 
