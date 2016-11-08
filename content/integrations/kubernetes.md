@@ -10,7 +10,7 @@ updated_for_agent: 5.8.5
 
 ![Kubernetes Dashboard](/static/images/k8sdashboard.png)
 
-Get metrics from your Kubelets in real time to:
+Get metrics from your Kubelets and [Kube-State-Metrics](https://github.com/kubernetes/kube-state-metrics) in real time to:
 
 * Visualize your Kubernetes cluster performance
 * Collect performances metrics for your containers, pods, container namespaces
