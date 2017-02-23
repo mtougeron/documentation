@@ -3,7 +3,6 @@
 Built with [nanoc](http://nanoc.stoneship.org/), a static website generation tool.
 
 # Setup
-
 Install Rbenv and Ruby 2.3.0:
 
 ```
@@ -54,6 +53,8 @@ brew install openssl
 rbenv exec bundle config --local build.eventmachine --with-opt-dir=/usr/local/opt/openssl
 ```
 
+## Github personal token
+
 Integrations that have metrics will require your Github Personal Token. For more information on generating a token, see [Github's documentation](https://help.github.com/articles/creating-an-access-token-for-command-line-use/). After you've generated a token, add the following line to the `.bash_profile` in your home directory:
 
 ```
@@ -61,6 +62,27 @@ export github_personal_token=[paste access token here]
 ```
 
 You should then run `source ~/.bash_profile` to reload the settings.
+
+## Setup using Docker
+
+An alternative to setting up the development environment as explained above is to use the Docker container development environment.
+
+```
+# Build the docker image. This takes a lot of time.
+docker build -f Dockerfile-dev -t dd-docs:latest .
+
+# Run the docker container.
+docker run -ti \
+  -v $PWD:/docs \
+  -p 3000:3000 \
+  -e github_personal_token=$github_personal_token \
+  dd-docs \
+  /bin/bash -c "cd /docs; rake clean && rake"
+```
+
+Note that the above command assumes you have set up your Github Personal Token as described earlier. If you have not, you should replace `$github_personal_token` with your token.
+
+Although nanoc reports that it is watching for changes, it doesn't seem to update automatically. To start a rebuild, hit enter at the nanoc prompt.
 
 # Working on Docs
 
@@ -137,7 +159,7 @@ Every integration should have the following format:
 ### Overview
 **Absolutely Required.**
 
-The first thing in the Overview should be a representative image for the integration. Try to make it as interesting as possible. 
+The first thing in the Overview should be a representative image for the integration. Try to make it as interesting as possible.
 
 The overview section is required and should be a paragraph or two with some bullets of what is interesting about this integration. For example, the following comes from the Docker integration.
 
@@ -163,7 +185,7 @@ At the end of the configuration section include a link to the example configurat
 
 #### Configuration Options
 
-Describe each of the options available in the YAML file. This will often be the stuff included in the YAML comments (remove them from the YAML included in the doc), but sometimes you will have to investigate a bit to figure out what the option is for. 
+Describe each of the options available in the YAML file. This will often be the stuff included in the YAML comments (remove them from the YAML included in the doc), but sometimes you will have to investigate a bit to figure out what the option is for.
 
 ### Validation
 **Required**
