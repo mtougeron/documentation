@@ -12,9 +12,9 @@ listorder: 10
 
 Datadog automatically keeps track of what is running where, thanks to its Service Discovery feature. Service Discovery allows you to define configuration templates that will be applied automatically to monitor your containers. -->
 
-Dockerは[急速に採用されています]（https://www.datadoghq.com/docker-adoption/）、Docker Swarm、Kubernetes、AmazonのECSなどのプラットフォームは、ホスト間のオーケストレーションと複製を管理することで、サービスの実行をより簡単でより弾力性のあるものにします。 しかし、そのすべてが監視を難しくしています。 あるホストから別のホストに動的に移行しているサービスをどのように監視できますか？
+弊社の利用実態を見ると、[Dockerが急速に浸透し始めている](https://www.datadoghq.com/docker-adoption/)のがよく分かります。そして、Docker Swarm, Kubernetes, Amazon ECS のようなプラットフォームを採用することで、コンテナの複製とオーケストレーションの管理をすることができるようになり、 Dokcer に構築したサービスをより簡単勝つ安定して運用ができるようになりました。しかしこれらの仕組みは、インフラの監視をより困難にしました。ホスト間を動的に移動していくサービス環境をどのように監視していますか?
 
-Datadogは、サービスディスカバリー機能のおかげで、どこで実行されているかを自動的に追跡します。 Service Discoveryでは、コンテナを監視するために自動的に適用される構成テンプレートを定義できます。
+Datadog が提供する監視の仕組みでは、サービス ディスカバリ機能を使って、どこで何が実行されているかを自動的に追跡することができます。サービス ディスカバリでは、コンテナの監視を自動で開始するために必要な設定ファイルのテンプレートを定義しておくことができます。
 
 
 <!-- ## How it works
@@ -25,13 +25,13 @@ The Service Discovery feature watches for Docker events like when a container is
 
 Configuration templates can be defined by simple template files or as single key-value stores using etcd or Consul. -->
 
-## 使い方
+## 動作の原理
 
-[Dockerを監視する問題（https://www.datadoghq.com/blog/the-docker-monitoring-problem/）]を考慮すると、ホスト中心のモデルからサービス指向のモデルに移行する戦略があります 。 これを実行するには、すべてのホストにインストールされているDatadogエージェントを使用するのではなく、データドッグエージェントをコンテナ化されたサービスとして実行します。
+["The Docker monitoring problem" (Docker を監視する際の課題) ](https://www.datadoghq.com/blog/the-docker-monitoring-problem/)の考察からも、この課題を解決するための一つの方法は、ホスト中心の監視モデルからサービスを切り口とした監視モデルへ移行する戦略です。この戦略を具現化するには、各ホストにインストールされた Datadog Agent を利用するのではなく、サービス コンテナ化されたDatadog Agent を実行する必要があります。
 
-Service Discovery機能は、コンテナが作成、破棄、開始、または停止されたときのようなDockerイベントを監視します。 これらのいずれかが発生すると、エージェントは影響を受けるサービスを特定し、このイメージの設定テンプレートをロードし、自動的にチェックを設定します。
+サービス ディスカバリ機能は、コンテナの作成/破棄/開始/停止のような Docker イベントを監視します。いずれかのイベントが発生すると、Agent は、影響を受けるサービスを特定します。その後、Agent は、そのイメージの監視に必要な設定用テンプレートをロードし、自動的に監視のための設定を実施します。
 
-設定テンプレートは、単純なテンプレートファイルや、etcdやConsulを使った単一のKey-Valueストアとして定義できます。
+設定用のテンプレートは、単純ファイル形式や、etcd, Consul を使った Key-Value ストアとして定義することができます。
 
 
 <!-- ## How to set it up
@@ -69,51 +69,52 @@ By default, the Datadog Agent includes Service Discovery support for:
 These are provided by the configuration templates in the [Datadog Agent `conf.d/auto_conf` directory](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf).
 
 To add Service Discovery for your custom container images, you simply need to add a configuration template to the `conf.d/auto_conf` directory.
-
-## Configuration templates
-
-The configuration templates in [the `conf.d/auto_conf` directory](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf) are nearly identical to the example YAML configuration files provided in [the Datadog `conf.d` directory](https://github.com/DataDog/dd-agent/tree/master/conf.d), but with one important field added. The `docker_images` field is required and identifies the container image(s) to which the configuration template should be applied.
 -->
 
-##セットアップ方法
+## セットアップの仕方
 
-サービスディスカバリを使用するには、まずDatadog Agentをサービスとして実行する必要があります。
+サービス ディスカバリを使用するには、まず サービス コンテナ化された Datadog Agent を実行する必要があります。
 
-Docker Swarmでは、[APIキー]（https://app.datadoghq.com/account/settings#api）を使用して、マネージャノードの1つで次のコマンドを実行することでこれを行うことができます。
+Docker Swarm の場合は、管理ノードのどれかで次のコマンドを実行します。([API key](https://app.datadoghq.com/account/settings#api) は、Datadog のアカウント情報に基づいて書き換えてください。)
 
-    ドッカーサービスcreate \
-      --name dd-agent \
-      --mode global \
-       - マウントタイプ=バインド、ソース= / var / run / docker.sock、ターゲット= / var / run / docker.sock \
-      --mount type = bind、source = / proc /、target = / host / proc /、ro = true \
-      ターゲット= /ホスト/ sys / fs / cgroup、ro = true \ / sys / fs / cgroup /
-      -e API_KEY = <あなたのAPIキー> \
-      -e SD_BACKEND =ドッカー\
-      datadog / docker-dd-agent：latest
+    docker service create \
+      --name dd-agent \
+      --mode global \
+      --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+      --mount type=bind,source=/proc/,target=/host/proc/,ro=true \
+      --mount type=bind,source=/sys/fs/cgroup/,target=/host/sys/fs/cgroup,ro=true \
+      -e API_KEY=<YOUR API KEY> \
+      -e SD_BACKEND=docker \
+      datadog/docker-dd-agent:latest
 
-Kubernetesについては、[Kubernetes Integration]（http://docs.datadoghq.com/integrations/kubernetes/）に従ってDaemonSetを作成することができます。また、[Amazon ECS integration instructions]（http://docs.datadoghq.com/integrations/ecs/）も利用可能です。
+Kubernetes の場合は、["Kubernetes Integration"](http://docs.datadoghq.com/integrations/kubernetes/) に従って DaemonSet を作成してください。又、ECSの場合は、["Amazon ECS integration instructions"](http://docs.datadoghq.com/integrations/ecs/) を参照してください。
 
-デフォルトでは、Datadog Agentには次のサービス検出のサポートが含まれています。
+Datadog Agent には、次のサービス ディスカバリ機能がデフォルトで組み込まれています:
 
-- Apache Webサーバー
-- 領事
+- Apache Web Server
+- Consul
 - CouchDB
-- カウチベース
-- 弾性検索
+- Couchbase
+- Elasticsearch
 - etcd
-- Kube州の統計情報
-- 京都タイクーン
+- Kube State Metrics
+- Kyoto Tycoon
 - Memcached
-- レディス
+- Redis
 - Riak
 
-これらは、[Datadog Agentのconf.d / auto_conf`ディレクトリ]（https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf）の設定テンプレートによって提供されます。
+これら設定テンプレートは、Datadog Agent 内の[`conf.d/auto_conf`](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf) ディレクトリに保存されています。
 
-独自のコンテナイメージ用のサービスディスカバリを追加するには、 `conf.d / auto_conf`ディレクトリに設定テンプレートを追加するだけです。
+オリジナルのコンテナ イメージ用にサービス ディスカバリ機能を追加するには、`conf.d/auto_conf` ディレクトリに、設定用テンプレートを追加するだけです。
 
-##設定テンプレート
 
-[ `conf.d / auto_conf`ディレクトリ]（https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf）内の構成テンプレートが提供された例のYAML設定ファイルとほぼ同じです【Datadog `conf.d`ディレクトリ]（https://github.com/DataDog/dd-agent/tree/master/conf.d）ではなく、一つの重要なフィールドを追加しました。 `docker_images`フィールドが必要とする構成テンプレートを適用する必要があるために容器の画像（複数可）を識別します。
+<!-- ## Configuration templates
+
+The configuration templates in [the `conf.d/auto_conf` directory](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf) are nearly identical to the example YAML configuration files provided in [the Datadog `conf.d` directory](https://github.com/DataDog/dd-agent/tree/master/conf.d), but with one important field added. The `docker_images` field is required and identifies the container image(s) to which the configuration template should be applied. -->
+
+## 設定用のテンプレート
+
+[`conf.d/auto_conf`](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf) ディレクトリ内で提供されている設定用のテンプレートは、`docker_images`という追加フィールドを覗いて、 Datadog Agent の [`conf.d`](https://github.com/DataDog/dd-agent/tree/master/conf.d) 内で提供しているの設定用 YMAL ファイルと同じです。 テンプレートでは、この `docker_images` フィールドに、テンプレートを適用する対象コンテナ イメージを必ず指定する必要があります。
 
 
 <!-- ### Template variables
@@ -131,20 +132,21 @@ As of version `5.8.3` of the Datadog Agent, you can also use keys as a suffix wh
 As an example if the rabbitmq container mentioned above is available over two networks `bridge` and `swarm`, using `%%host_swarm%%` will pick the IP address from the swarm network.
 Note that for the `host` variable if several networks are found and no key is passed the agent attempts to use the default `bridge` network. -->
 
-###テンプレート変数
+### テンプレート変数
 
-Docker SwarmやKubernetesのようなオーケストレーションツールはコンテナを任意のホスト上で自動的に実行するため、サービスレポートのメトリックが動的になるホストアドレスとポートが表示されます。設定テンプレートでこれを説明するには、変数 `%% host %% 'と` %% port %%'を使用できます。
+Docker Swarm や Kubernetes のようなオーケストレーション ツールは、任意のホスト上でコンテナを自動的に起動するため、監視対象となっているサービスのメトリクスを公開している IP アドレスやポート番号は、動的に変化してします。設定用のテンプレート内では、この現象に対処するために `%%host%%` と` %%port%%` という変数を使用することができます。
 
- 変数の値のリストが必要で、特定のものを選択する必要がある場合、アンダースコアの後ろにインデックスまたはキーを追加して、リストから値を指定できます。たとえば、 `%% host_0 %%`や `%% port_4 %%`などです。インデックスは0から始まり、インデックスが指定されていない場合、値リスト内の最後の値がますます使用されることに注意してください。
+変数の値にリスト化した複数の値が考えられる場合、どれか一つを選択する必要があります。このよう場な場合、変数名に続いてアンダースコアとインデックス、又はキーを付記して、値を指定することができます。例えば、 `%%host_0%%` や `%%port_4%%` などです。インデックスは、 `0` から始まります。インデックスが指定されていない場合は、値リスト内の最後の値(最も大きい値)が採用されることに注意してください。
 
-ポート変数の例を考えてみましょう。管理モジュールが有効になっているRabbitMQコンテナには、デフォルトで6つの公開ポートがあります。エージェントが見るポートのリストは、 `[4369,5671,5672,15671,15672,25672]`です。 **注文に注意してください。エージェントは常に値を昇順にソートします。**
+ポート番号の変数を例に考えてみましょう: 管理モジュールが有効になっている RabbitMQ コンテナには、デフォルトで6つのアクセス可能なポートがあります。Agent が、見ることのできるポートのリストは、 `[4369,5671,5672,15671,15672,25672]` になります。**値の並んでいる順番に注意してください。Agent は、常に値を昇順にソートします。**
 
-rabbitmqイメージのデフォルトの管理ポートは、リスト内のインデックスが4（ '0'から始まる）である '15672'なので、テンプレート変数は `%% port_4 %% 'である必要があります。
+今回の rabbitmq イメージのデフォルトの管理ポートは、`15672` で、リスト内のインデックスが `4`（`0` から始まる）になり、テンプレート変数は `%%port_4%%` と指定する必要があります。
 
-Datadog Agentのバージョン5.8.3では、変数に辞書が含まれている場合にキーを接尾辞として使用することもできます。これは、複数のネットワークが接続されているコンテナのIPアドレスを選択する場合に特に便利です。
+Datadog Agent の v`5.8.3` 以降では、変数が辞書形式になっている場合に、変数の接尾語にキーも使用できるようになりました。この機能は、複数のネットワークと接続しているコンテナのIPアドレスを指定する場合に特に便利です。
 
-例として、上記のrabbitmqコンテナが2つのネットワーク `bridge`と` swarm`で利用可能な場合、 `%% host_swarm %% 'を使用すると、swarmネットワークからIPアドレスが選択されます。
-`host`変数の場合、いくつかのネットワークが見つかってキーが渡されない場合、エージェントはデフォルトの` bridge`ネットワークを使用しようとします。
+例として、上記の rabbitmq コンテナが、`bridge` と `swarm` という二つのネットワークから利用可能な場合、 `%%host_swarm%%` を指定すると、swarm ネットワーク側のIPアドレスをすることができます。
+
+`host` 変数の場合、複数のネットワークを検知したがキーが渡されない場合、Agent はデフォルトの` bridge` ネットワークを使用しようとします。
 
 
 <!-- ## Configuration templates with key-value stores
@@ -155,13 +157,14 @@ To make configuration template management easier, you can use etcd or Consul, tw
 
 First you'll need to configure etcd or Consul as your Service Discovery backend by either updating the `datadog.conf` file or passing the settings as environment variables when starting the Datadog Agent service. -->
 
-##キー・バリュー・ストアを持つ構成テンプレート
 
-テンプレートを管理してDatadog Agentコンテナにコピーする（または独自のDatadog Agentコンテナをビルドしてカスタム構成テンプレートを組み込む）ことで、Datadog Agentの `conf.d / auto_conf`ディレクトリ内の設定テンプレートを使用したサービスディスカバリは簡単なプロセスです。 このプロセスをスケーリングするのは難しい。
+## Key-Value ストアを使った場合の設定
 
-設定テンプレートの管理を容易にするために、普及している2つの分散キーストアであるetcdやConsulをテンプレートのリポジトリとして使用することができます。
+Datadog Agent の `conf.d/auto_conf` ディレクトリ内にある設定用テンプレートを使用したサービス ディスカバリは、非常に明快なプロセスです。しかしながら、テンプレートを管理し、それらを各 Agent コンテナにコピーする作業(又は、専用の設定用テンプレートを含む独自の Agent コンテナをビルドすること)は、煩雑でスケールしません。
 
-まず、datadog.confファイルを更新するか、Datadog Agentサービスを開始するときに環境変数として設定を渡すことによって、サービスディスカバリバックエンドとしてetcdまたはConsulを設定する必要があります。
+設定用テンプレートの管理を容易にするために、分散 key-value ストアの etcd や Consul を、テンプレートのリポジトリとして使用することができます。
+
+etcd または Consul を利用するためには、サービス ディスカバリ バックエンドとして、Agentに認識させる必要があります。 `datadog.conf` ファイルを更新してサービス ディスカバリ バックエンドの指定をするか、Datadog Agentのサービスコンテナを起動する際に環境変数として設定を与える方法で認識させることができます。
 
 
 <!-- ### Configuring etcd or Consul in `datadog.conf`
@@ -187,28 +190,28 @@ In the `dataodg.conf` file, you can enable etcd or Consul as a service discovery
     # If you Consul store requires token authentication for service discovery, you can define that token here.
     # consul_token: f45cbd0b-5022-samp-le00-4eaa7c1f40f1 -->
 
-### `datadog.conf`にetcdやConsulを設定する
+### `datadog.conf` 内に etcd や Consul への設定を記述する方法
 
-`dataodg.conf`ファイルでは、` sd_config_backend`、 `sd_backend_host`、` sd_backend_port`の設定を解除して設定することで、etcdやConsulをサービスディスカバリ設定バックエンドとして有効にすることができます。領事を使用している場合は、コメントを外して「consul_token」も設定する必要があります。
+`dataodg.conf` ファイル内で、`sd_config_backend`, `sd_backend_host`, `sd_backend_port` の前の `#` を削除し、設定したい内容を記述することで、 etcd や Consul をサービス ディスカバリのバックエンドとして機能させることができます。Consul を使用している場合は、同様にして `consul_token` も設定する必要があります。
 
-    ＃今のところDockerだけがサポートされているので、この行のコメントを解除するだけです。
-    service_discovery_backend：ドッカー
+    # For now only Docker is supported so you just need to un-comment this line.
+    service_discovery_backend: docker
 
-    ＃構成テンプレートを探すために使用するキー/値ストアを定義します。
-    ＃デフォルトはetcdです。領事もサポートされています。
-    sd_config_backend：etcd
+    # Define which key/value store must be used to look for configuration templates.
+    # Default is etcd. Consul is also supported.
+    sd_config_backend: etcd
 
-    ＃バックエンドに接続するための設定。これらはデフォルトです。別の設定を実行する場合は編集してください。
-    sd_backend_host：127.0.0.1
-    sd_backend_port：4001
+    # Settings for connecting to the backend. These are the default, edit them if you run a different config.
+    sd_backend_host: 127.0.0.1
+    sd_backend_port: 4001
 
-    ＃デフォルトでは、エージェントは以下の設定テンプレートを検索します。
-    バックエンドの＃/ datadog / check_configsキーを押してください。
-    ＃そうでない場合は、このオプションのコメントを外し、その値を変更します。
-    ＃sd_template_dir：/ datadog / check_configs
+    # By default, the agent will look for the configuration templates under the
+    # `/datadog/check_configs` key in the back-end.
+    # If you wish otherwise, uncomment this option and modify its value.
+    # sd_template_dir: /datadog/check_configs
 
-    ＃Consulストアにサービス検出のトークン認証が必要な場合は、ここでそのトークンを定義できます。
-    ＃consul_token：f45cbd0b-5022-samp-le00-4eaa7c1f40f1
+    # If you Consul store requires token authentication for service discovery, you can define that token here.
+    # consul_token: f45cbd0b-5022-samp-le00-4eaa7c1f40f1
 
 
 <!-- ### Configuring etcd or Consul using environment variables
@@ -228,22 +231,22 @@ To pass the settings listed above as environment variables when starting the Dat
       -e SD_BACKEND_PORT=4001 \
       datadog/docker-dd-agent:latest -->
 
-### 環境変数を使ってetcdやConsulを設定する
+### 環境変数を使って etcd や Consul を設定する方法
 
-Docker SwarmでDatadog Agentを起動するときに上記の環境変数を設定するには、次のコマンドを実行します。
+バックエンドの設定を、環境変数として渡す場合は、次のようなコマンドを実行します。 以下は、Docker Swarm で Agent サービスコンテナを起動するコマンドの例です:
 
-     ドッカーサービスcreate \
-       --name dd-agent \
-       --mode global \
-       - マウントタイプ=バインド、ソース= / var / run / docker.sock、ターゲット= / var / run / docker.sock \
-       --mount type = bind、source = / proc /、target = / host / proc /、ro = true \
-       ターゲット= /ホスト/ sys / fs / cgroup、ro = true \ / sys / fs / cgroup /
-       -e API_KEY = <あなたのAPIキー> \
-       -e SD_BACKEND =ドッカー\
-       -s SD_CONFIG_BACKEND = etcd \
-       -e SD_BACKEND_HOST = 127.0.0.1 \
-       -e SD_BACKEND_PORT = 4001 \
-       datadog / docker-dd-agent：latest
+    docker service create \
+      --name dd-agent \
+      --mode global \
+      --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+      --mount type=bind,source=/proc/,target=/host/proc/,ro=true \
+      --mount type=bind,source=/sys/fs/cgroup/,target=/host/sys/fs/cgroup,ro=true \
+      -e API_KEY=<YOUR API KEY> \
+      -e SD_BACKEND=docker \
+      -e SD_CONFIG_BACKEND=etcd \
+      -e SD_BACKEND_HOST=127.0.0.1 \
+      -e SD_BACKEND_PORT=4001 \
+      datadog/docker-dd-agent:latest
 
 
 <!-- ### Template structure in key-value stores
@@ -265,23 +268,23 @@ After your Datadog Agent service has been configured to use your Service Discove
 Note that in the structure above, you may have multiple checks for a single container. For example you may run a Java service that provides an HTTP API, using the HTTP check and the JMX integration at the same time. To declare that in templates, simply add elements to the `check_names`, `init_configs`, and `instances lists`. These elements will be matched together based on their index in their respective lists.
  -->
 
-### キー値ストアのテンプレート構造
+### Key-Value ストア用のテンプレートの構造
 
-Datadog AgentサービスがService Discovery設定バックエンドを使用するように設定された後、構成テンプレートを構造体に保存する必要があります。
+Datadog Agent サービスが サービス ディスカバリ用のバックエンドを参照するように設定を済ませた次は、設定用テンプレートを以下の構成で Key-Value ストアに保存する必要があります:
 
-    / datadog /
-      check_configs /
-        docker_image_0 /
-           - check_names：["check_name_0"]
-           - init_configs：[{init_config}]
-           - インスタンス：[{instance_config}]
-        docker_image_1 /
-           - check_names：["check_name_1a"、 "check_name_1b"]
-           - init_configs：[{init_config_1a}、{init_config_1b}]
-           - インスタンス：[{instance_config_1a}、{instance_config_1b}]
-        ...
+    /datadog/
+      check_configs/
+        docker_image_0/
+          - check_names: ["check_name_0"]
+          - init_configs: [{init_config}]
+          - instances: [{instance_config}]
+        docker_image_1/
+          - check_names: ["check_name_1a", "check_name_1b"]
+          - init_configs: [{init_config_1a}, {init_config_1b}]
+          - instances: [{instance_config_1a}, {instance_config_1b}]
+        ...
 
-上記の構造では、1つのコンテナに対して複数のチェックがあることに注意してください。たとえば、HTTPチェックとJMX統合を同時に使用して、HTTP APIを提供するJavaサービスを実行できます。テンプレートで宣言するには、単に `check_names`、` init_configs`、 `instances lists`に要素を追加します。これらの要素は、それぞれのリストのインデックスに基づいて一致します。
+上記の構造では、1つのコンテナに対して複数のチェックがあることに注意してください。たとえば、 HTTP チェックとJMX統合を同時に使用して、 HTTP API を提供するJavaサービスを実行できます。テンプレートで宣言するには、単に `check_names`、`init_configs`、 `instances lists` に要素を追加します。これらの要素は、それぞれのリストのインデックスに基づいて一致します。
 
 
 <!-- ### Example: Apache Web Server
@@ -303,24 +306,24 @@ To store the same configuration template in etcd you could run the following com
     etcdctl set /datadog/check_configs/httpd/init_configs '[{}]'
     etcdctl set /datadog/check_configs/httpd/instances '[{"apache_status_url": "http://%%host%%/server-status?auto"}]' -->
 
-###例：Apache Webサーバー
+### 例: Apache Webサーバ
 
-デフォルトでは、Datadog Agentは[`conf.d / auto_conf / apache.yaml`ファイル]（https://github.com/DataDog/dd-agent/blob/master/conf）を介してApache Web Serverのサービス検出をサポートしています .d / auto_conf / apache.yaml）：
+デフォルトでは、 Datadog Agent は[`conf.d/auto_conf/apache.yaml` file](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf/apache.yaml)を介してApache Web Serverのサービス検出をサポートしています :
 
-     docker_images：
-       - httpd
+    docker_images:
+      - httpd
 
-     init_config：
+    init_config:
 
-     インスタンス：
-       - apache_status_url：http：// %%ホスト%% / server-status？auto
+    instances:
+      - apache_status_url: http://%%host%%/server-status?auto
 
-同じ構成テンプレートをetcdに保存するには、次のコマンドを実行します。
+同じ構成テンプレートをetcdに保存するには、次のコマンドを実行します:
 
-     etcdctl mkdir / datadog / check_configs / httpd
-     etcdctl set / datadog / check_configs / httpd / check_names '["apache"]'
-     etcdctl set / datadog / check_configs / httpd / init_configs '[{}]'
-     etc / apache_status_url： "http：// %% host %% / server-status？auto"}] '/ etc / httpd /
+    etcdctl mkdir /datadog/check_configs/httpd
+    etcdctl set /datadog/check_configs/httpd/check_names '["apache"]'
+    etcdctl set /datadog/check_configs/httpd/init_configs '[{}]'
+    etcdctl set /datadog/check_configs/httpd/instances '[{"apache_status_url": "http://%%host%%/server-status?auto"}]'
 
 
 <!-- ### Image name format in the configuration store
@@ -329,11 +332,11 @@ Before version `5.8.3` of the Datadog Agent it was required to truncate the imag
 
 To make configuration more precise we now use the complete container image identifier in the key. So the agent will look in `datadog/check_configs/quay.io/coreos/etcd:latest/...`, and fallback to the old format if no template was found to ensure backward compatibility. -->
 
-###構成ストア内のイメージ名の形式
+### 構成ストア内のイメージ名のフォーマット
 
-Datadog Agentのバージョン5.8.3より前では、イメージ名を最小限にする必要がありました。 例えば Dockerイメージの `quay.io/coreos/etcd：latest`コンフィギュレーションストア内のキーは` datadog / check_configs / etcd / ... `にする必要がありました。
+Datadog Agentのバージョン `5.8.3` より前では、イメージ名を最小限にする必要がありました。 例えば Docker イメージの `quay.io/coreos/etcd：latest` コンフィギュレーションストア内のキーは `datadog/check_configs/etcd/...` にする必要がありました。
 
-設定をより正確にするために、キー内に完全なコンテナイメージ識別子を使用します。 したがって、エージェントは `datadog / check_configs / quay.io / coreos / etcos：latest / ...`で検索し、下位互換性を保証するテンプレートが見つからなければ古いフォーマットにフォールバックします。
+設定をより正確にするために、キー内に完全なコンテナイメージ識別子を使用します。 したがって、 Agent は `datadog/check_configs/quay.io/coreos/etcd:latest/...` で検索し、下位互換性を保証するテンプレートが見つからなければ古いフォーマットにフォールバックします。
 
 
 <!-- ### Using Docker label to specify the template path
@@ -342,11 +345,11 @@ In case you need to match different templates with containers running the same i
 
 For example, if a container has this label configured as `com.datadoghq.sd.check.id: foobar`, it will look for a configuration template in the store under the key `datadog/check_configs/foobar/...`. -->
 
-### Dockerラベルを使用してテンプレートパスを指定する
+### Docker ラベルを使用したテンプレート パスの指定
 
-同じイメージを実行するコンテナとは異なるテンプレートをマッチさせる必要がある場合は、 `5.8.3`からエージェントがコンフィギュレーションストアで探すべきパスを明示的に定義し、` com.datadoghq .sd.check.id`ラベル。
+同じイメージを実行するコンテナとは異なるテンプレートをマッチさせる必要がある場合は、 `5.8.3`からエージェントがコンフィギュレーションストアで探すべきパスを明示的に定義し、`com.datadoghq.sd.check.id` ラベル。
 
-たとえば、コンテナのラベルが `com.datadoghq.sd.check.id：foobar`に設定されている場合、ストア内でキー` datadog / check_configs / foobar / ... `の下にある設定テンプレートを探します。
+たとえば、コンテナのラベルが `com.datadoghq.sd.check.id: foobar`に設定されている場合、ストア内でキー `datadog/check_configs/foobar/...` の下にある設定テンプレートを探します。
 
 
 <!-- ## Configuration templates with Kubernetes annotations
@@ -360,16 +363,16 @@ As of version 5.12 of the Datadog Agent, you can use Kubernetes pod annotations 
 
 Also similar to the key-value store configuration above, you include multiple checks for a container within in the pod. Each element from `check_names`, `init_configs`, and `instances` will be matched together based on their index. In pods with multiple containers, you can simply include additional annotations using the corresponding Kubernetes container name. -->
 
-## Kubernetesアノテーションによる設定テンプレート
+## Kubernetes アノテーションによる設定テンプレート
 
-Datadog Agentのバージョン5.12では、Kubernetes podアノテーションを使用して設定テンプレートを保存することができます。 [Kubernetes integration instructions]（/ integations / kubernetes /）に従い、注釈をポッド定義に追加します。基本的なフォーマットは、上記のキーバリューストア構成で使用されている構造に似ていますが、Kubernetesの場合、次の形式があります。
+Datadog Agent のバージョン5.12では、Kubernetes podアノテーションを使用して設定テンプレートを保存することができます。[Kubernetes integration instructions](/integrations/kubernetes/) に従い、注釈をポッド定義に追加します。基本的なフォーマットは、上記のキーバリューストア構成で使用されている構造に似ていますが、Kubernetesの場合、次の形式があります。
 
-    注釈：
-      Service-discovery.datadoghq.com/ <コンテナ名> .check_names： '["check_name_0"]'
-      <kubernetes Container Name> .init_configs： '[{init_config}]'サービス - ディストリビューション.datadoghq.com/
-      service-discovery.datadoghq.com/ <コンテナ名>。インスタンス： '[{instance_config}]'
+    annotations:
+      service-discovery.datadoghq.com/<Kubernetes Container Name>.check_names: '["check_name_0"]'
+      service-discovery.datadoghq.com/<Kubernetes Container Name>.init_configs: '[{init_config}]'
+      service-discovery.datadoghq.com/<Kubernetes Container Name>.instances: '[{instance_config}]'
 
-また、上記のKey-Valueストア設定と同様に、ポッド内のコンテナに対して複数のチェックを行います。 `check_names`、` init_configs`、そして `instances`の各要素は、それらのインデックスに基づいて一緒にマッチします。複数のコンテナを持つポッドでは、対応するKubernetesコンテナ名を使用して注釈を追加するだけです。
+また、上記の Key-Value ストア設定と同様に、ポッド内のコンテナに対して複数のチェックを行います。 `check_names`、`init_configs`、そして `instances` の各要素は、それらのインデックスに基づいて一緒にマッチします。複数のコンテナを持つポッドでは、対応する Kubernetes コンテナ名を使用して注釈を追加するだけです。
 
 
 <!-- ### Example: Apache Web Server
@@ -393,23 +396,23 @@ Here's an example of the Apache YAML file that would correspond to the configura
           ports:
             - containerPort: 80 -->
 
-###例：Apache Webサーバー
+### 例: Apache Web サーバ
 
-次に、設定テンプレート[`conf.d / auto_conf / apache.yaml`ファイル]（https://github.com/DataDog/dd-agent/blob/master/conf）に対応するApache YAMLファイルの例を示します。 d / auto_conf / apache.yaml）：
+次に、設定テンプレート [`conf.d/auto_conf/apache.yaml` file](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf/apache.yaml) に対応するApache YAMLファイルの例を示します：
 
-     apiVersion：v1
-     種類：ポッド
-     メタデータ：
-       名前：apache
-       注釈：
-         service-discovery.datadoghq.com/apache.check_names： '["apache"]'
-         service-discovery.datadoghq.com/apache.init_configs： '[{}]'
-         '[{"apache_status_url"： "http：// %%ホスト%% / server-status？auto"}]
-       ラベル：
-         名前：apache
-     仕様：
-       コンテナ：
-         - 名前：apache
-           image：httpd
-           ポート：
-             - containerPort：80
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: apache
+      annotations:
+        service-discovery.datadoghq.com/apache.check_names: '["apache"]'
+        service-discovery.datadoghq.com/apache.init_configs: '[{}]'
+        service-discovery.datadoghq.com/apache.instances: '[{"apache_status_url": "http://%%host%%/server-status?auto"}]'
+      labels:
+        name: apache
+    spec:
+      containers:
+        - name: apache
+          image: httpd
+          ports:
+            - containerPort: 80
