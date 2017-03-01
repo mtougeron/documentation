@@ -2,7 +2,7 @@
 last_modified: 2017/03/01
 translation_status: complete
 language: ja
-title: タグ付けに関するガイド
+title: タグ付け機能に関するガイド
 kind: guide
 listorder: 12
 ---
@@ -12,7 +12,7 @@ Tagging is used throughout the Datadog product to make it easier to subset and q
 
 ## 概要
 
-タギングはDatadog製品全体で使用され、監視する必要のあるマシンとメトリックのサブセット化とクエリの実行を容易にします。 タグに基づいて割り当ておよびフィルタリングする機能がなければ、環境に存在する問題を見つけ出し、真の原因を発見するためにそれらを絞り込むことは非常に困難です。
+タグ付け機能は、 Datadog サービスの全体に共通して、簡単に監視対象のマシンやメトリックをグループ化したり、フィルタリングしたりするために使うことができる機能です。タグを割り当て、それを基にフィルタする機能がなければ、運用環境で発生している複数の問題の中から真の問題を絞り込むことは非常に難しい作業です。
 
 
 <!-- ## How to assign tags
@@ -21,7 +21,14 @@ There are four primary ways to assign tags: inherited from the integration, in t
 
 ## タグを割り当てる方法
 
-タグを割り当てるには主に4つの主な方法があります。統合、設定、UI、およびAPIの使用を継承しますが、UIおよびAPIではホストレベルでのみタグを割り当てることができます。 推奨される方法は、統合または構成ファイルを使用することです。
+タグを割り当てるには、主に4つの方法があります:
+
+  1. インテグレーションからの継承
+  2. datadog.conf やインテグレーション内の YAML 設定ファイルへの記述
+  3. UI から設定
+  4. API のオプション項目の設定 (ホスト レベルでの、タグを割り当になります)
+
+推奨される方法は、インテグレーションからの継承か datadog.conf から設定する方法です。
 
 
 <!-- ### Inheriting tags from an integration
@@ -30,7 +37,7 @@ The easiest method for assigning tags is to rely on the integration. Tags assign
 
 ### インテグレーションからタグを継承する
 
-タグを割り当てる最も簡単な方法は、インテグレーションに依存することです。 Amazon Web Servicesインスタンス、シェフレシピ、Dockerラベルなどに割り当てられたタグは、Datadogに持ち込まれると自動的にホストとメトリックに割り当てられます。
+タグを割り当てる最も簡単な方法は、インテグレーションに依存することです。 Amazon Web Services インスタンス, Chef のレシピ,  Docker ラベル, その他、事前に割り当てたタグは、監視情報(ホスト、メトリック、イベントなど)が、 Datadog へ到達した時点で自動的に割り当てられます。
 
 
 <!-- The following integration sources create tags automatically in Datadog:
@@ -91,7 +98,7 @@ The easiest method for assigning tags is to rely on the integration. Tags assign
 | Windows Services | Service Name |
 {: .table} -->
 
-次のインテグレーションは、タグを自動的で生成します:
+次のインテグレーションは、タグ情報を継承し自動的で割り当てます:
 
 | Amazon CloudFront | Distribution |
 | Amazon EC2 | AMI, Customer Gateway, DHCP Option, EBS Volume, Instance, Internet Gateway, Network ACL, Network Interface, Reserved Instance, Reserved Instance Listing, Route Table , Security Group - EC2 Classic, Security Group - VPC, Snapshot, Spot Batch, Spot Instance Request, Spot Instances, Subnet, Virtual Private Gateway, VPC, VPN Connection |
@@ -180,9 +187,11 @@ The reason why you should use key value pairs instead of simply values will beco
 
 ### 設定ファイルを使用してタグを割り当てる
 
-Datadogインテグレーションはすべて、エージェントインストールのconf.dディレクトリにあるyaml設定ファイルによって設定されます。構成ファイルの場所については、[この記事では] [agentinstall]を参照してください。 datadog.confファイルはより伝統的なiniファイルですが、タグは統合ファイルと同様にエージェント全体の構成ファイルに定義できます。 yamlファイルには、そのレベルで割り当てたいタグのリストを含むタグ辞書があります。エージェントに割り当てたタグは、そのエージェントのホスト上のすべての統合に適用されます。
+Agent 組み込み型の Datadog インテグレーションは、 `conf.d` ディレクトリにある YAML 設定ファイルを参照して動作しています。従って、この設定ファイルにタグに関する記述をすることで、インテグレーションが送信する監視情報のタグを割り当てることができます。 YAML 設定ファイルのタグ項目には、インテグレーション レベルで割り当てたい情報を辞書形式で記述します。尚、YAML 設定ファイルの場所については、[次の記事][agentinstall]を参照してください。
 
-値のリストを持つ辞書は、2つの異なる機能的に等価な形式を持っています。
+又、 `datadog.conf` ファイルにタグ情報を追記することで、インストールしている Agent が送信している全ての監視情報にタグを割り当てることもできます。
+
+複数の値が入った辞書形式のタグは、以下の様な二つの方法で記述することができます。
 
     tags: firsttag, secondtag, thirdtagag
 
@@ -193,9 +202,12 @@ Datadogインテグレーションはすべて、エージェントインスト�
       - secondtag
       - thirdtag
 
-両方の形式がyaml構成ファイルに表示されますが、datadog.confのiniファイルの場合は、最初の形式だけが有効です。
+`conf.d` 以下のインテグレーション用 YAML では、どちら方法で記述しても機能します。
+`datadog.conf` の方は、旧来の `ini` ファイル形式になるので、最初に示した記述方法のみ機能します。
 
-それぞれのタグは好きなものにすることができますが、タグがキー：値のペアであれば、タグ付けで成功するでしょう。キーは役割、機能、地域、アプリケーションを表し、値はその役割、機能、地域、またはアプリケーションのインスタンスです。良いタグの例をいくつか挙げます：
+タグを設定する場合のベストプラクティスは、 `key:value` のペアで割り当てることです。`key` は、ロール, 機能, 地域, アプリケーションなどの検索する際のキーを設定し、`value` は、そのインスタンスやそのインスタンスが所属するグループにおいける特定の文字列を設定します。
+
+好ましいタグの組み合わせの例:
 
     region:east
     region:nw
@@ -203,13 +215,13 @@ Datadogインテグレーションはすべて、エージェントインスト�
     database:primary
     role:sobotka
 
-単純な値ではなくキーの値のペアを使用する理由は、タグを使用してメトリックとマシンをフィルタリングおよびグループ化するときに明らかになります。つまり、キーの値のペアを使用する必要はなく、単純な値が有効です。
+単純な文字列の指定ではなく、 `key:value` のペアを指定する理由は、タグを使用してメトリックとマシンを、フィルタリングしたりグループ化するときに明らかになります。(詳細に付いては、"タグの使い方"のセクションで説明します。)　尚、 `key:value` であることは必要条件ではないで、状況に応じて利用することは可能です。
 
 
 <!--### Assigning host tags in the UI
 You can also assign tags to hosts, but not to integrations in the UI. To assign tags in the UI, start by going to the Infrastructure List page. Click on any host and then click the Update Host Tags button. In the host overlay that appears, click Edit Tags and make the changes you wish. -->
 
-### UIのホストタグの割り当て
+### UIからのホスト タグの割り当て
 
 ホストにタグを割り当てることもできますが、UIの統合にはタグを割り当てることはできません。 UIでタグを割り当てるには、まずインフラストラクチャリストページに移動します。任意のホストをクリックしてから、[Update Host Tags]ボタンをクリックします。表示されるホストオーバーレイで、[タグを編集]をクリックして、希望の変更を加えます。
 
@@ -231,7 +243,8 @@ After you have assigned tags at the host and integration level, you can start us
 - Host Map
 - Monitors -->
 
-タグの使い方
+## タグの使い方
+
 ホストとインテグレーションレベルでタグを割り当てたら、それらを使って興味深い方法でフィルタリングしてグループ化することができます。 タグを使用できる場所はいくつかあります：
 
 - Events List
@@ -247,7 +260,7 @@ The Events List will show you all the events that have occured in your environme
 ![Events List and Tags](/static/images/eventtags.png)
  -->
 
-### イベントリストのタグを使う
+### イベントリストでのタグの使用
 
 イベントリストには、指定した期間内に自分の環境で発生したすべてのイベントが表示されます。 これは圧倒的なので、タグを使用して、割り当てたタグに基づいてリストを絞り込むことができます。 イベントリストの上の検索ボックスに任意のテキストを入力すると、全文検索が実行されます。 `` tags： `` `と続けてタグをつけて、ホストから来たすべてのイベントやそのタグとの統合を見ることもできます。 イメージの例は、タグrole：sobotkaです。 したがって、検索テキストは `` tags：role：sobotka```です。
 
@@ -262,7 +275,7 @@ You can use tags to narrow down the metrics to display on a dashboard grapm, or 
 You can also use tags to overlay events on the dashboard. This works in exactly the same way as in the Events List. Simply enter ```tags:``` followed by the tag and you will see the corresponding events overlaid as vertical bars on each graph.
 -->
 
-### Dashboardsでのタグの使用
+### Dashboard でのタグの使用
 
 タグを使用して、メトリックを絞り込んでダッシュボードgrapmに表示したり、表示するメトリックのグループを作成したりすることができます。 表示するメトリックを絞り込むには、上のテキストボックスにタグを入力します。 その特定のタグが割り当てられているすべてのホスト上で選択されたメトリックが表示されます。 タグを使用してグループ化するには、グループのテキストボックスにタグのキー部分を入力します。 たとえば、timeseriesグラフがあり、 `` `role：database```、` `role：frontend``、および` `role：loadbalancer```というタグを割り当てていると、 データベースを持つすべてのマシン、フロントエンドを持つマシン、ロードバランサを搭載したマシンの3分の1のtimeseriesグラフの行。
 
@@ -277,7 +290,7 @@ To filter the list of hosts in the Infrastructure list, enter a tag in the filte
 
 ![Tags in the Infrastructure List](/static/images/infrastructuretags.png) -->
 
-###インフラストラクチャリストとホストマップのタグの使用
+### インフラリストと Host map でのタグの使用
 
 インフラストラクチャリストのホストリストをフィルタリングするには、ページ上部のフィルタテキストボックスにタグを入力します。 グループのテキストボックスにタグのキー部分を入力して、ホストをグループ化することもできます。 したがって、グループボックスにロールを入力すると、各ロールがグループヘッダーとして表示され、その後にそのタグを持つホストが表示されます。
 
