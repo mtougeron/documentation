@@ -263,7 +263,7 @@ Depending on your analysis needs, you may choose to apply other mathematical fun
 <div class="collapse" id="collapseGraphicFunctionTable" markdown="1">
 <!-- The graphing functions section is a partial -->
 
-<%= @items['/partials/graphingfunctions/'].compiled_content %>
+<%= @items['/ja/partials/graphingfunctions/'].compiled_content %>
 
 </div>
 
