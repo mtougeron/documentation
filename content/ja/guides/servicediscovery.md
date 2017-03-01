@@ -158,7 +158,7 @@ To make configuration template management easier, you can use etcd or Consul, tw
 First you'll need to configure etcd or Consul as your Service Discovery backend by either updating the `datadog.conf` file or passing the settings as environment variables when starting the Datadog Agent service. -->
 
 
-## Key-Value ストアを使った場合の設定
+## Key-Value ストアを使った設定
 
 Datadog Agent の `conf.d/auto_conf` ディレクトリ内にある設定用テンプレートを使用したサービス ディスカバリは、非常に明快なプロセスです。しかしながら、テンプレートを管理し、それらを各 Agent コンテナにコピーする作業(又は、専用の設定用テンプレートを含む独自の Agent コンテナをビルドすること)は、煩雑でスケールしません。
 
@@ -268,7 +268,7 @@ After your Datadog Agent service has been configured to use your Service Discove
 Note that in the structure above, you may have multiple checks for a single container. For example you may run a Java service that provides an HTTP API, using the HTTP check and the JMX integration at the same time. To declare that in templates, simply add elements to the `check_names`, `init_configs`, and `instances lists`. These elements will be matched together based on their index in their respective lists.
  -->
 
-### Key-Value ストア用のテンプレートの構造
+### Key-Value ストア用のテンプレート
 
 Datadog Agent サービスが サービス ディスカバリ用のバックエンドを参照するように設定を済ませた次は、設定用テンプレートを以下の構成で Key-Value ストアに保存する必要があります:
 
@@ -284,7 +284,7 @@ Datadog Agent サービスが サービス ディスカバリ用のバックエ�
           - instances: [{instance_config_1a}, {instance_config_1b}]
         ...
 
-上記の構造では、1つのコンテナに対して複数のチェックがあることに注意してください。たとえば、 HTTP チェックとJMX統合を同時に使用して、 HTTP API を提供するJavaサービスを実行できます。テンプレートで宣言するには、単に `check_names`、`init_configs`、 `instances lists` に要素を追加します。これらの要素は、それぞれのリストのインデックスに基づいて一致します。
+上記の構文では、1つのコンテナに対して複数のチェックがあることに注意してください。例えば、 HTTP の API 提供する Java サービスを監視する場合、HTTP Check と JMX のインテグレーションを同時に設定することになります。この設定を、テンプレート内で宣言するには、 `check_names`, `init_configs`, `instances lists` に要素を追加します。これらの要素は、先に解説したリスト インデックスに関連づて使用することになります。
 
 
 <!-- ### Example: Apache Web Server
@@ -308,7 +308,7 @@ To store the same configuration template in etcd you could run the following com
 
 ### 例: Apache Webサーバ
 
-デフォルトでは、 Datadog Agent は[`conf.d/auto_conf/apache.yaml` file](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf/apache.yaml)を介してApache Web Serverのサービス検出をサポートしています :
+デフォルトでは、 Datadog Agent は [`conf.d/auto_conf/apache.yaml`](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf/apache.yaml) ファイルを参照して Apache Web Server のサービス ディスカバリ機能を提供しています :
 
     docker_images:
       - httpd
@@ -318,7 +318,7 @@ To store the same configuration template in etcd you could run the following com
     instances:
       - apache_status_url: http://%%host%%/server-status?auto
 
-同じ構成テンプレートをetcdに保存するには、次のコマンドを実行します:
+同じ設定用テンプレートを etcd に保存するには、次のコマンドを実行します:
 
     etcdctl mkdir /datadog/check_configs/httpd
     etcdctl set /datadog/check_configs/httpd/check_names '["apache"]'
@@ -332,11 +332,11 @@ Before version `5.8.3` of the Datadog Agent it was required to truncate the imag
 
 To make configuration more precise we now use the complete container image identifier in the key. So the agent will look in `datadog/check_configs/quay.io/coreos/etcd:latest/...`, and fallback to the old format if no template was found to ensure backward compatibility. -->
 
-### 構成ストア内のイメージ名のフォーマット
+### Key-Value ストア内でのイメージ名の扱い
 
-Datadog Agentのバージョン `5.8.3` より前では、イメージ名を最小限にする必要がありました。 例えば Docker イメージの `quay.io/coreos/etcd：latest` コンフィギュレーションストア内のキーは `datadog/check_configs/etcd/...` にする必要がありました。
+Datadog Agent の `v5.8.3` より前では、イメージ名を最小限に縮める必要がありました。例えば Docker イメージの `quay.io/coreos/etcd：latest` の場合、Key-Value ストア内のキーは `datadog/check_configs/etcd/...` にする必要がありました。
 
-設定をより正確にするために、キー内に完全なコンテナイメージ識別子を使用します。 したがって、 Agent は `datadog/check_configs/quay.io/coreos/etcd:latest/...` で検索し、下位互換性を保証するテンプレートが見つからなければ古いフォーマットにフォールバックします。
+監視を設定する際により正確にイメージを指定イメージを指定できるように、キーの部分に完全なコンテナイメージ識別子を使用することができるようにしました。従って、 Agent は `datadog/check_configs/quay.io/coreos/etcd:latest/...` で検索をします。万が一、該当するテンプレートが見つからない場合は、古いフォーマットを使って検索をするようにもなってます。
 
 
 <!-- ### Using Docker label to specify the template path
@@ -347,9 +347,10 @@ For example, if a container has this label configured as `com.datadoghq.sd.check
 
 ### Docker ラベルを使用したテンプレート パスの指定
 
-同じイメージを実行するコンテナとは異なるテンプレートをマッチさせる必要がある場合は、 `5.8.3`からエージェントがコンフィギュレーションストアで探すべきパスを明示的に定義し、`com.datadoghq.sd.check.id` ラベル。
+同じイメージを実行しているコンテナに対して異なる設定用テンプレートをマッチングさせたい場合は、Docker ラベルを使って参照すべき設定テンプレートの保存されている場所を明示的に定義できます。
+(Docker ラベル: `com.datadoghq.sd.check.id`)　**この機能は、Agent `v5.8.3` 以降が対象です。**
 
-たとえば、コンテナのラベルが `com.datadoghq.sd.check.id: foobar`に設定されている場合、ストア内でキー `datadog/check_configs/foobar/...` の下にある設定テンプレートを探します。
+例えば、コンテナのラベルに `com.datadoghq.sd.check.id: foobar` が設定されている場合、Key-Value ストア内の `datadog/check_configs/foobar/...` キー以下にある設定用テンプレートを探しに行きます。
 
 
 <!-- ## Configuration templates with Kubernetes annotations
@@ -363,16 +364,20 @@ As of version 5.12 of the Datadog Agent, you can use Kubernetes pod annotations 
 
 Also similar to the key-value store configuration above, you include multiple checks for a container within in the pod. Each element from `check_names`, `init_configs`, and `instances` will be matched together based on their index. In pods with multiple containers, you can simply include additional annotations using the corresponding Kubernetes container name. -->
 
-## Kubernetes アノテーションによる設定テンプレート
+## Kubernetes アノテーションを使った設定
 
-Datadog Agent のバージョン5.12では、Kubernetes podアノテーションを使用して設定テンプレートを保存することができます。[Kubernetes integration instructions](/integrations/kubernetes/) に従い、注釈をポッド定義に追加します。基本的なフォーマットは、上記のキーバリューストア構成で使用されている構造に似ていますが、Kubernetesの場合、次の形式があります。
+Datadog Agent の `v5.12` では、Kubernetes pod アノテーションを使用して設定用テンプレートを保存することができます。pod へのアノテーションの追加は、 [Kubernetes integration instructions](/integrations/kubernetes/) を参照してください。
+
+### アノテーション用のテンプレート
+
+基本的なフォーマットは、上記の Key-Value ストア構成で使用しているフォーマットに似ています。但し、Kubernetes を使っている場合は、次のアノテーション部分を追加します。
 
     annotations:
       service-discovery.datadoghq.com/<Kubernetes Container Name>.check_names: '["check_name_0"]'
       service-discovery.datadoghq.com/<Kubernetes Container Name>.init_configs: '[{init_config}]'
       service-discovery.datadoghq.com/<Kubernetes Container Name>.instances: '[{instance_config}]'
 
-また、上記の Key-Value ストア設定と同様に、ポッド内のコンテナに対して複数のチェックを行います。 `check_names`、`init_configs`、そして `instances` の各要素は、それらのインデックスに基づいて一緒にマッチします。複数のコンテナを持つポッドでは、対応する Kubernetes コンテナ名を使用して注釈を追加するだけです。
+上記の Key-Value ストア設定と同様に、 pod 内のコンテナに対して複数のチェックを実行することができます。 `check_names`, `init_configs`, `instances` の各要素は、インデックス情報を使ってマッチングされます。pod の内に複数のコンテナが存在する場合は、対象にしたい Kubernetes のコンテナ名のアノテーションを追記することになります。
 
 
 <!-- ### Example: Apache Web Server
@@ -398,7 +403,7 @@ Here's an example of the Apache YAML file that would correspond to the configura
 
 ### 例: Apache Web サーバ
 
-次に、設定テンプレート [`conf.d/auto_conf/apache.yaml` file](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf/apache.yaml) に対応するApache YAMLファイルの例を示します：
+以下に、Apache YAML ファイルに対応した設定用テンプレート [`conf.d/auto_conf/apache.yaml`](https://github.com/DataDog/dd-agent/blob/master/conf.d/auto_conf/apache.yaml) ファイルの例を示します:
 
     apiVersion: v1
     kind: Pod
