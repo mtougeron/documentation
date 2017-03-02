@@ -207,7 +207,7 @@ Agent 組み込み型の Datadog インテグレーションは、 `conf.d` デ�
 
 タグを設定する場合のベストプラクティスは、 `key:value` のペアで割り当てることです。`key` は、ロール, 機能, 地域, アプリケーションなどの検索する際のキーを設定し、`value` は、そのインスタンスやそのインスタンスが所属するグループにおいける特定の文字列を設定します。
 
-好ましいタグの組み合わせの例:
+後に有効に機能しそうなタグの組み合わせの例:
 
     region:east
     region:nw
@@ -221,17 +221,19 @@ Agent 組み込み型の Datadog インテグレーションは、 `conf.d` デ�
 <!--### Assigning host tags in the UI
 You can also assign tags to hosts, but not to integrations in the UI. To assign tags in the UI, start by going to the Infrastructure List page. Click on any host and then click the Update Host Tags button. In the host overlay that appears, click Edit Tags and make the changes you wish. -->
 
-### UIからのホスト タグの割り当て
+### UI からのホスト タグの割り当て
 
-ホストにタグを割り当てることもできますが、UIの統合にはタグを割り当てることはできません。 UIでタグを割り当てるには、まずインフラストラクチャリストページに移動します。任意のホストをクリックしてから、[Update Host Tags]ボタンをクリックします。表示されるホストオーバーレイで、[タグを編集]をクリックして、希望の変更を加えます。
+UI からホストにタグを割り当てることもできます。但し UI からインテグレーション関連の情報には割り当てることはできません。 UI でタグを割り当てるには、まず Infrastructure List ページに移動し、ホスト行の余白部分をクリックします。右側から飛び出してきたオーバーレイで、 Edit Tags ボタンをクリックし、タグを追加/削除をします。
 
 
 <!-- ### Assigning host tags using the API
 You can also assign tags to hosts, but not to integrations using the API. The endpoints you want to work with are /tags/hosts and depending on whether you PUT, POST, or DELETE you will update, add, or delete tags for the chosen host. For more details on using the Tags endpoints in the API, [review this document][tagsapi] -->
 
-### APIを使用してホストタグを割り当てる
+### API を使用してホストタグを割り当てる
 
-ホストにタグを割り当てることもできますが、APIを使用して統合することはできません。 作業したいエンドポイントは/ tags / hostsで、PUT、POST、DELETEのいずれかによって、選択したホストのタグを更新、追加、または削除します。 APIでタグのエンドポイントを使用する方法の詳細については、[このドキュメントを読む] [tagsapi]
+API を使ってホストにタグを割り当てることもできます。但し API を使用してインテグレーション関連の情報には割り当てることはできません。
+
+APIで操作するべきエンドポイントは、 `/tags/hosts` で、PUT, POST, DELETE メソッドのいずれかにより、ホストのタグを更新、追加、または削除することができます。 API 使ってタグのエンドポイントを使用する方法については、["API Reference"][tagsapi]を参照してください。
 
 
 <!-- ## How to use tags
@@ -245,13 +247,15 @@ After you have assigned tags at the host and integration level, you can start us
 
 ## タグの使い方
 
-ホストとインテグレーションレベルでタグを割り当てたら、それらを使って興味深い方法でフィルタリングしてグループ化することができます。 タグを使用できる場所はいくつかあります：
+ホストとインテグレーション関連の情報にタグを割り当てたら、それらを使ってフィルタリングしたりグループ化したりすることができます。
+
+以下は、タグを有効に活用していきたいページです:
 
 - Events List
-- Dashboards
+- Dashboard
 - Infrastructure List
 - Host Map
-- Monitors
+- モニタ(アラート機能)
 
 
 <!-- ### Using tags in the Events List
@@ -260,9 +264,9 @@ The Events List will show you all the events that have occured in your environme
 ![Events List and Tags](/static/images/eventtags.png)
  -->
 
-### イベントリストでのタグの使用
+### Events List でのタグの使用
 
-イベントリストには、指定した期間内に自分の環境で発生したすべてのイベントが表示されます。 これは圧倒的なので、タグを使用して、割り当てたタグに基づいてリストを絞り込むことができます。 イベントリストの上の検索ボックスに任意のテキストを入力すると、全文検索が実行されます。 `` tags： `` `と続けてタグをつけて、ホストから来たすべてのイベントやそのタグとの統合を見ることもできます。 イメージの例は、タグrole：sobotkaです。 したがって、検索テキストは `` tags：role：sobotka```です。
+Events List には、指定した期間内に監視対象内で発生したすべてのイベントが表示されます。一般的にリストには、圧倒的な量のイベントが表示されるはずです。従って、割り当てたタグに基づいて、リストに表示されるイベントの量を絞り込みます。 Events List の上の検索ボックスに任意のテキストを入力すると、全文検索が実行されます。 ```tags:``` に続けて文字列を入力すると、その文字列のタグを持ったホストやインテグレーションから届いた全てのイベントを見ることもできます。以下のキャプチャの例は、"role:sobotka" のタグの付いたイベントを表示しています。従って、検索文字列として ```tags:role:sobotka``` と入力しています。
 
 ![Events List and Tags](/static/images/eventtags.png)
 
@@ -277,11 +281,11 @@ You can also use tags to overlay events on the dashboard. This works in exactly 
 
 ### Dashboard でのタグの使用
 
-タグを使用して、メトリックを絞り込んでダッシュボードgrapmに表示したり、表示するメトリックのグループを作成したりすることができます。 表示するメトリックを絞り込むには、上のテキストボックスにタグを入力します。 その特定のタグが割り当てられているすべてのホスト上で選択されたメトリックが表示されます。 タグを使用してグループ化するには、グループのテキストボックスにタグのキー部分を入力します。 たとえば、timeseriesグラフがあり、 `` `role：database```、` `role：frontend``、および` `role：loadbalancer```というタグを割り当てていると、 データベースを持つすべてのマシン、フロントエンドを持つマシン、ロードバランサを搭載したマシンの3分の1のtimeseriesグラフの行。
+タグを使用して、メトリクスを絞り込みダッシュボード内のグラフに表示したり、表示するメトリックをグループ化し表示したりすることができます。 タグを使用して表示するメトリクスを絞り込むには、 "from" の右側のテキストボックスにタグを入力します。この指定により、選択されたメトリクスの中で、そのタグが割り当てられているもの全てが表示されます。 タグを使用してグループ化するには、 "xxxx by" の右側にあるテキストボックスに "key:value" タグの key を入力します。たとえば、 timeseries グラフを設定している際に、 インフラの各レイアに ```role:database```, ```role:frontend```, ```role:loadbalancer``` というタグを割り当てている場合は、 `role` を指定することで、 database を持つ全てのマシン群、 frontend を持つマシン群、 loadbalancer をマシン群と、三本の線を持ったグラフを表示することができます。
 
 ![Tags in Dashboards](/static/images/dashboardtags.png)
 
-タグを使用して、ダッシュボード上のイベントをオーバーレイすることもできます。 これは、イベントリストとまったく同じ方法で動作します。 単に `` tags： `` `と続けてタグを入力すれば、対応するイベントが各グラフの縦線として重ねて表示されます。
+更に、タグを使用して、ダッシュボード上にイベントをオーバーレイすることもできます。 これは、Event List での使い方とまったく同じ方法で動作します。 単に ```tags：``` に続けてタグを入力すれば、対応するイベントが各グラフにピンクの縦線として上書き表示されます。
 
 
 <!-- ### Using tags in the Infrastructure List and the Host Map
@@ -290,9 +294,10 @@ To filter the list of hosts in the Infrastructure list, enter a tag in the filte
 
 ![Tags in the Infrastructure List](/static/images/infrastructuretags.png) -->
 
-### インフラリストと Host map でのタグの使用
+### Infrastructure List と Host Map でのタグの使用
 
-インフラストラクチャリストのホストリストをフィルタリングするには、ページ上部のフィルタテキストボックスにタグを入力します。 グループのテキストボックスにタグのキー部分を入力して、ホストをグループ化することもできます。 したがって、グループボックスにロールを入力すると、各ロールがグループヘッダーとして表示され、その後にそのタグを持つホストが表示されます。
+Infrastructure List にあるホストをフィルタリングしリストを表示するには、ページ上部のフィルタ用テキスト ボックスにタグを入力します。更に、"Group by tags:" のテキストボックスにタグのkey部分を入力して、ホストをグループ化することもできます。
+"Group by tags:" に `role` などのタグのkey部分を入力すると、各ロール値がグループヘッダーとして表示され、その後にそのタグを持つホストが順次表示されます。
 
 ![Tags in the Infrastructure List](/static/images/infrastructuretags.png)
 
@@ -304,9 +309,9 @@ When defining a monitor, you can use tags to allow the monitor to apply to any s
 ![Tags in Monitors](/static/images/monitortags.png)
  -->
 
-### モニターでのタグの使用
+### モニタでのタグの使用
 
-モニターを定義するときには、タグを使用して、環境内のホストのサブセットにモニターを適用できます。
+モニタを定義する際は、タグを使用してインフラ リスト内の全ホストのサブセットを定義し、アラートに必要な条件を適用することができます。
 
 ![Tags in Monitors](/static/images/monitortags.png)
 
