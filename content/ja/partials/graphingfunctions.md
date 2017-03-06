@@ -1,5 +1,5 @@
 
-Function               | Category      | Description
+関数                    | カテゴリ        | 概要
 -----------------------|---------------|-------------------
 `abs()`                | Arithmetic    | absolute value
 `log2()`               | Arithmetic    | base-2 logarithm
@@ -39,29 +39,34 @@ Function               | Category      | Description
 
 **`.as_count()` & `.as_rate()`**
 
-These functions are only intended for metrics submitted as rates or counters via statsd. These functions will have no effect for other metric types. For more on details about how to use `.as_count()` and `.as_rate()` please see [our blog post](https://www.datadoghq.com/blog/visualize-statsd-metrics-counts-graphing/).
+これらの関数は、statsdを使用して rate 又は counter として送信されたメトリックを対象としています。 これらの関数を設定しても、他のメトリック タイプには影響を及ぼしません。 `.as_count()`と`.as_rate()` の使用方法の詳細については、[ブログの記事](https://www.datadoghq.com/blog/visualize-statsd-metrics-counts-graphing/)をご覧ください。
 
 **Rollup**
 
-`.rollup()` is recommended for expert users only. Appending this function to the end of a query allows you to control the number of raw points rolled up into a single point plotted on the graph. The function takes two parameters, method and time: `.rollup(method,time)`
+`.rollup()` は、 Datadog でデータ ポイントがどのように扱われているかを理解しているユーザにのみお勧めの関数です。この関数をクエリの最後尾に追加することで、グラフ上にプロットされる一つのデータ ポイントが、生のデータ ポイントの何個分を集計した結果なのかを制御することができます。この関数は、メソッドと時間を引き通として受け付けます: `.rollup(method,time)`
 
-The method can be sum/min/max/count/avg and time is in seconds. You can use either one individually, or both together like `.rollup(sum,120)`. We impose a limit of 350 points per time range. For example, if you're requesting `.rollup(20)` for a month-long window, we will return data at a rollup far greater than 20 seconds in order to prevent returning a gigantic number of points.
+設定できるメソッドは、sum/min/max/count/avgで、時間は秒単位です。どちらか一つを指定することも可能です。又、 `.rollup(sum,120)` のように両方を一度に指定することもできます。 Datadog のグラフ上では、 350 データ ポイントの表示可能データ ポイントの制限を課しています。例えば、一ヶ月の期間を表示するグラフで `.rollup(20)` を使ってデータ ポイントを表示しようとしている場合、先の 350 データ ポイントの制限に収まるように 20 秒より長い時間で rollup したデータを返しています。
 
 **Top functions**
 
-* a metric query string with some grouping, e.g. ```avg:system.cpu.idle{*} by {host}```
-* the number of series to be displayed, as an integer.
+取り扱う時系列データを制限します。
+
+* この関数で取り扱えるメトリック クエリは、次のようになります。グループ化することもできます。 例: ```avg:system.cpu.idle{*} by {host}```
+* クエリの次に表示されている整数は、表示に使う時系列データの数になります。
 * one of ```'max'```, ```'min'```, ```'last'```, ```'l2norm'```, or ```'area'```.  ```'area'``` is the signed area under the curve being graphed, which can be negative.  ```'l2norm'``` uses the <a href="http://en.wikipedia.org/wiki/Norm_(mathematics)#p-norm">L2 Norm</a> of the time series, which is always positive, to rank the series.
 * either ```'desc'``` (rank the results in descending order) or ```'asc'``` (ascending order).
+* ```'desc'``` は、降順で結果をランク付けします。 ```'asc'``` は、昇順で結果をランク付けします。
 
-The ```top()``` method also has convenience functions of the following form, all of which take a single series list as input:
+```top()``` 関数には、次の形式の表現もあります。
+これらの関数は、 single series list に対して適用することができます。
 
 ```[top, bottom][5, 10, 15, 20]_[mean, min, max, last, area, l2norm]()```
 
-For example, ```bottom10_min()``` retrieves lowest-valued 10 series using the ‘min’ metric.
+例えば ```bottom10_min()``` は、'min'メトリックを使ってリスト化した際の下位か10個のシリーズを取得してきます。
+
 
 **Robust regression**
 
-The most common type of linear regression -- ordinary least squares (OLS) -- can be heavily influenced by a small number of points with extreme values. Robust regression is an alternative method for fitting a regression line; it is not influenced as strongly by a small number of extreme values. As an example, see the plot below. The original metric is shown as a solid blue line. The purple dashed line is an OLS regression line, and the yellow dashed line is a robust regression line. The one short-lived spike in the metric leads to the OLS regression line trending upward, but the robust regression line ignores the spike and does a better job fitting the overall trend in the metric.
+Anonaly の検知で最も一般的なタイプの線形回帰は、ordinary least squares (OLS)です。この方法は、極端な値を持つ少数のポイントによって大きく影響を受けることがあります。Robust regression は、少数の極値の影響を最小限に抑えた線形回帰を実現するための代替法です。例として、以下のプロットを参照してください。 素のメトリックは、青色の実線です。紫色の破線はOLS回帰線で、黄色の破線は Robust regression です。単発で派生した短いスパイクは、OLSの回帰線を上向きにしますが、 Robust regression の回帰線は、スパイクを無視し、メトリック全体の傾向に添って推移してくれます。
 
 <img src="/static/images/robust-trend.png" style="width:700px; border:1px solid #777777"/>
