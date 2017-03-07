@@ -1,13 +1,14 @@
 ---
-last_modified: 2017/01/25
-translation_status: progress
+last_modified: 2017/03/07
+translation_status: complete
 language: ja
-title: Datadog-AWS Integration
+title: Datadog-AWS インテグレーション
 integration_title: Amazon Web Services
 kind: integration
 newhlevel: true
 git_integration_title: amazon_web_services
 ---
+
 <!-- # Overview
 
 Connect to Amazon Web Services (AWS) in order to:
@@ -22,11 +23,11 @@ Connect to Amazon Web Services (AWS) in order to:
 
 以下の内容を実現するために、Amazon Web Services (AWS)からデータを集取できるようにします:
 
-* AWS内で自動実行されている操作のステータスアップデートをイベントストリーム内に表示できるようにします。
-* Agentを入れ低な状態でも、EC2ホストからCloudWatchメトリクスを集取できるようにします。
-* EC2ホストに対しEC2特有の情報をタグとして付与することができるようにします。("availability zone"など)
-* ELB, RDS, EBS, AutoScaling, DynamoDB, ElastiCache, CloudFront, CloudSearch, Kinesis, Lambda, OpsWorks, Redshift, Route53, SQS, SNSなどの、他のAWSサービスのCloudWatchメトリクスを収集できるようにします。
-* EC2のスケジュールメンテナンス作業の発生イベントをイベントストリーム内に表示できるようにします。
+* AWS 内で自動実行されている操作のステータスアップデートをイベントストリーム内に表示できるようにします。
+* Agent を入れ低な状態でも、 EC2 ホストから CloudWatch メトリクスを集取できるようにします。
+* EC2 ホストに対し EC2 特有の情報をタグとして付与することができるようにします。( "availability zone" など)
+* ELB, RDS, EBS, AutoScaling, DynamoDB, ElastiCache, CloudFront, CloudSearch, Kinesis, Lambda, OpsWorks, Redshift, Route53, SQS, SNS などの、他の AWS サービスの CloudWatch メトリクスを収集できるようにします。
+* EC2 のスケジュールメンテナンス作業の発生イベントをイベントストリーム内に表示できるようにします。
 
 <!-- Related integrations include:
 
@@ -44,6 +45,7 @@ Connect to Amazon Web Services (AWS) in order to:
 | [Route 53](/integrations/awsroute53) | DNS and traffic management with availability monitoring |
 | [Simple Email Service (SES)](/integrations/awsses) | cost-effective, outbound-only email-sending service |
 | [Simple Notification System (SNS)](/integrations/awssns) | alert and notifications |
+| [Simple Queue Service (SQS)](/integrations/awssqs) | messaging queue service |
 | [Simple Storage Service (S3)](/integrations/awss3) | highly available and scalable cloud storage service |
 {:.table} -->
 
@@ -58,11 +60,12 @@ Connect to Amazon Web Services (AWS) in order to:
 | [Elastic Load Balancing (ELB)](/ja/integrations/awselb) | distributes incoming application traffic across multiple Amazon EC2 instances |
 | [EC2 Container Service (ECS)](/ja/integrations/ecs) | container management service that supports Docker containers |
 | [Elasticsearch Service (ES)](/ja/integrations/awses) |  deploy, operate, and scale Elasticsearch clusters |
-| [Kinesis](/integrations/awskinesis) | service for real-time processing of large, distributed data streams |
+| [Kinesis](/ja/integrations/awskinesis) | service for real-time processing of large, distributed data streams |
 | [Relational Database Service (RDS)](/ja/integrations/awsrds) | relational database in the cloud |
 | [Route 53](/ja/integrations/awsroute53) | DNS and traffic management with availability monitoring |
 | [Simple Email Service (SES)](/ja/integrations/awsses) | cost-effective, outbound-only email-sending service |
 | [Simple Notification System (SNS)](/ja/integrations/awssns) | alert and notifications |
+| [Simple Queue Service (SQS)](/ja/integrations/awssqs) | messaging queue service |
 | [Simple Storage Service (S3)](/ja/integrations/awss3) | highly available and scalable cloud storage service |
 {:.table}
 
@@ -79,13 +82,12 @@ Connect to Amazon Web Services (AWS) in order to:
 | Lambda |
 | MachineLearning |
 | OpsWorks |
-| Simple Queing Service |
 | Simple Workflow Service |
 | Trusted Advisor |
 | WorkSpaces |
 {:.table} -->
 
-上記以外にもDatadogと連携することができる他のAWSサービスがあります。それらのサービスについては、AWSインテグレーションまたはCloudTrailインテグレーション出設定することができます。現状では以下がそれらの他のAWSサービスになります。これらは状況にあわせて順次追加されます:
+上記以外にも Datadog と連携することができる他の AWS サービスがあります。それらのサービスについては、AWS インテグレーションまたは CloudTrail インテグレーション出設定することができます。現状では以下がそれらの他の AWS サービスになります。これらは状況にあわせて順次追加されます:
 
 | AutoScaling |
 | Budgeting |
@@ -97,7 +99,6 @@ Connect to Amazon Web Services (AWS) in order to:
 | Lambda |
 | MachineLearning |
 | OpsWorks |
-| Simple Queing Service |
 | Simple Workflow Service |
 | Trusted Advisor |
 | WorkSpaces |
@@ -111,17 +112,15 @@ understanding of role delegation, refer to the [AWS IAM Best Practices guide](ht
 
 Note: The GovCloud and China regions do not currently support IAM role delegation. If you are deploying in these regions please skip to the [configuration section](#configuration-for-china-and-govcloud) below. -->
 
-# 導入･設定
+# 導入
 
-Amazon Web Services用のインテグレーションを導入するには、AWS IAMを使用してロール委任を設定する必要があります。
-ロール委任の機能をよりよく理解するには、AWSが公開している[IAMのベストプラクティス](http://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/best-practices.html#delegate-using-roles)を参照してください。
+Amazon Web Services 用のインテグレーションを導入するには、AWS IAM を使用してロール委任を設定する必要があります。
+ロール委任の機能をよりよく理解するには、AWS が公開している [IAM  のベストプラクティス](http://docs.aws.amazon.com/ja_jp/IAM/latest/UserGuide/best-practices.html#delegate-using-roles)を参照してください。
 
-注：現状、GovCloudと中国リージョンでは、AWS IAMのロール委任機能がサポートされていません。 これらのリージョンに対してインテグレーションを設定しようとしている場合は、[GovCloudと中国リージョンでの設定](#configuration-for-china-and-govcloud)のセクションへ進んでください。
+注: 現状、GovCloud と中国リージョンでは、AWS IAM のロール委任機能がサポートされていません。 これらのリージョンに対してインテグレーションを設定しようとしている場合は、[GovCloud と中国リージョンでの設定](#configuration-for-china-and-govcloud)のセクションへ進んでください。
 
 
-<!-- 1.  First create a new policy in the [IAM Console](https://console.aws.amazon.com/iam/home#s=Home). Name the policy `DatadogAWSIntegrationPolicy`, or choose a name that is more relevant for you. To take advantage of every AWS integration offered by Datadog, using the following in the **Policy Document** textbox. As we add other components to the integration, these permissions may change. -->
-
-1. まず、[IAMコンソール][1]に移動し、新しいポリシーを作成します。 その新しく作ったポリシーを`DatadogAWSIntegrationPolicy`として登録します。ここで設定する名前は自由です選択することができます。Datadogが提供するすべてのAWS系インテグレーションを活用するには、次に紹介するJSONの内容を使ってください。尚、AWS系インテグレーションに新コンポーネントを追加する際に、アクセス許可の項目が変更されることがあります。
+<!-- 1.  First create a new policy in the [IAM Console](https://console.aws.amazon.com/iam/home#s=Home). Name the policy `DatadogAWSIntegrationPolicy`, or choose a name that is more relevant for you. To take advantage of every AWS integration offered by Datadog, using the following in the **Policy Document** textbox. As we add other components to the integration, these permissions may change.
 
         {
           "Version": "2012-10-17",
@@ -163,6 +162,7 @@ Amazon Web Services用のインテグレーションを導入するには、AWS 
                 "ses:Get*",
                 "sns:List*",
                 "sns:Publish",
+                "sqs:ListQueues",
                 "support:*"
               ],
               "Effect": "Allow",
@@ -171,26 +171,89 @@ Amazon Web Services用のインテグレーションを導入するには、AWS 
           ]
         }
 
-<!--     If you are not comfortable with granting all of these permissions, at the very least use the existing policies named **AmazonEC2ReadOnlyAccess** and **CloudWatchReadOnlyAccess**. For more detailed information regarding permissions, please see the [Permissions](#permissions) section below. -->
+     If you are not comfortable with granting all of these permissions, at the very least use the existing policies named **AmazonEC2ReadOnlyAccess** and **CloudWatchReadOnlyAccess**. For more detailed information regarding permissions, please see the [Permissions](#permissions) section below.
 
-今回紹介した権限をすべて付与することに不安がある場合は、、少なくとも`AmazonEC2ReadOnlyAccess`と`CloudWatchReadOnlyAccess`という既存のポリシーを付与してください。各AWS系インテグレーションが必要としている権限の詳細については、下記の[権限](#permissions)セクションを参照してください。
-
-<!-- 2.  Create a new role in the IAM Console. Name it anything you like, such as `DatadogAWSIntegrationRole`.
+2.  Create a new role in the IAM Console. Name it anything you like, such as `DatadogAWSIntegrationRole`.
 3.  From the selection, choose Role for Cross-Account Access.
 4.  Click the Select button for **Allows IAM users from a 3rd party AWS account to access this account**.
 5.  For Account ID, enter `464622532012` (Datadog's account ID). This means that you will grant Datadog and Datadog only read access to your AWS data. For External ID, enter the one generated on our website. Make sure you leave **Require MFA** disabled. *For more information about the External ID, refer to [this document in the IAM User Guide](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html)*.
 6.  Select the policy you created above.
-7.  Review what you selected and click the **Create Role** button. -->
+7.  Review what you selected and click the **Create Role** button.
 
-2. IAMコンソールで新しいロールを作成します。新しく作ったロールに`DatadogAWSIntegrationRole`のような名前を付けます。
+-->
+
+1. まず、 [IAM コンソール][1]に移動し、新しいポリシーを作成します。 その新しく作ったポリシーを` DatadogAWSIntegrationPolicy` として登録します。ここで設定する名前は自由です選択することができます。 Datadog が提供するすべての AWS 系インテグレーションを活用するには、次に紹介する JSON の内容を使ってください。尚、 AWS 系インテグレーションに新コンポーネントを追加する際に、アクセス許可の項目が変更されることがあります。
+
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "autoscaling:Describe*",
+                "budgets:ViewBudget",
+                "cloudtrail:DescribeTrails",
+                "cloudtrail:GetTrailStatus",
+                "cloudwatch:Describe*",
+                "cloudwatch:Get*",
+                "cloudwatch:List*",
+                "dynamodb:list*",
+                "dynamodb:describe*",
+                "ec2:Describe*",
+                "ec2:Get*",
+                "ecs:Describe*",
+                "ecs:List*",
+                "elasticache:Describe*",
+                "elasticache:List*",
+                "elasticloadbalancing:Describe*",
+                "elasticmapreduce:List*",
+                "elasticmapreduce:Describe*",
+                "es:ListTags",
+                "es:ListDomainNames",
+                "es:DescribeElasticsearchDomains",
+                "kinesis:List*",
+                "kinesis:Describe*",
+                "logs:Get*",
+                "logs:Describe*",
+                "logs:FilterLogEvents",
+                "logs:TestMetricFilter",
+                "rds:Describe*",
+                "rds:List*",
+                "route53:List*",
+                "s3:GetBucketTagging",
+                "s3:ListAllMyBuckets",
+                "ses:Get*",
+                "sns:List*",
+                "sns:Publish",
+                "sqs:ListQueues",
+                "support:*"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ]
+        }
+
+今回紹介した権限をすべて付与することに不安がある場合は、、少なくとも `AmazonEC2ReadOnlyAccess` と `CloudWatchReadOnlyAccess` という既存のポリシーを付与してください。各 AWS 系インテグレーションが必要としている権限の詳細については、下記の[権限](#permissions)セクションを参照してください。
+
+2. IAMコンソールで新しいロールを作成します。新しく作ったロールに `DatadogAWSIntegrationRole` のような名前を付けます。
 3. "ロールタイプの選択"のページで、`クロスアカウントアクセスのロール`を選択します。
-4. "AWS アカウントとサードパーティ AWS アカウント間のアクセス権を提供します" の右にある[選択]ボタンをクリックします。
-5. 「アカウントID」に`464622532012`（DatadogのアカウントID）と入力します。このアカウントIDを入力することで、AWSが提供しているデータへDatadogが読み取りのみの権限範囲でアクセスすることを許可します。「外部ID」には、Datadogの[AWSインテグレーションタイル](https://app.datadoghq.com/account/settings#integrations/amazon_web_services)内に表示された"AWS External ID"を入力します。尚、MFAの使用は、無効にしたままにしておいてください。外部IDの詳細については、[「IAMユーザーガイド」](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html)のドキュメントを参照してください。
-6. 上記で作成したポリシー(例:`DatadogAWSIntegrationPolicy`)を選択します。
+4. "AWS アカウントとサードパーティ AWS アカウント間のアクセス権を提供します" の右にある"選択"ボタンをクリックします。
+5. 「アカウントID」に`464622532012`（DatadogのアカウントID）と入力します。このアカウントIDを入力することで、 AWS が提供しているデータへ Datadog が読み取りのみの権限範囲でアクセスすることを許可します。「外部 ID」には、Datadog の[AWSインテグレーションタイル](https://app.datadoghq.com/account/settings#integrations/amazon_web_services)内に表示された "AWS External ID" を入力します。尚、 MFA の使用は、無効にしたままにしておいてください。外部 ID の詳細については、[「IAM ユーザーガイド」](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html)のドキュメントを参照してください。
+6. 上記で作成したポリシー(例: `DatadogAWSIntegrationPolicy` )を選択します。
 7. 選択した内容を確認し、**ロールの作成**ボタンをクリックします。
 
 
-# Configuration
+<!-- # Configuration
+
+![logo](/static/images/integrations-aws-secretentry.png)
+
+1.  Open the [AWS Integration tile](https://app.datadoghq.com/account/settings#integrations/amazon_web_services).
+2.  Select the **Role Delegation** tab.
+3.  Enter your AWS Account ID which can be found in the ARN of the newly created role. Then enter the name of the role you just created. Finally enter the External ID you specified above.
+4.  Choose the services you want to collect metrics for on the left side of the dialog. You can optionally add tags to all hosts and metrics. Also if you want to only monitor a subset of EC2 instances on AWS, tag them and specify the tag in the limit textbox here.
+5.  Click **Install Integration**. -->
+
+# 設定
 
 ![logo](/static/images/integrations-aws-secretentry.png)
 
@@ -200,7 +263,16 @@ Amazon Web Services用のインテグレーションを導入するには、AWS 
 4.  Choose the services you want to collect metrics for on the left side of the dialog. You can optionally add tags to all hosts and metrics. Also if you want to only monitor a subset of EC2 instances on AWS, tag them and specify the tag in the limit textbox here.
 5.  Click **Install Integration**.
 
-## Configuration for China and GovCloud
+
+<!-- ## Configuration for China and GovCloud
+
+1.  Open the [AWS Integration tile](https://app.datadoghq.com/account/settings#integrations/amazon_web_services).
+2.  Select the **Access Keys (GovCloud or China Only)** tab.
+3.  Enter your AWS Access Key and AWS Secret Key. Note: only access and secret keys for China and GovCloud are accepted.
+4.  Choose the services you want to collect metrics for on the left side of the dialog. You can optionally add tags to all hosts and metrics. Also if you want to only monitor a subset of EC2 instances on AWS, tag them and specify the tag in the limit textbox here.
+5.  Click **Install Integration**. -->
+
+## GovCloud と中国リージョンでの設定
 
 1.  Open the [AWS Integration tile](https://app.datadoghq.com/account/settings#integrations/amazon_web_services).
 2.  Select the **Access Keys (GovCloud or China Only)** tab.
@@ -208,9 +280,15 @@ Amazon Web Services用のインテグレーションを導入するには、AWS 
 4.  Choose the services you want to collect metrics for on the left side of the dialog. You can optionally add tags to all hosts and metrics. Also if you want to only monitor a subset of EC2 instances on AWS, tag them and specify the tag in the limit textbox here.
 5.  Click **Install Integration**.
 
-# Metrics
+
+<!-- # Metrics
+
+<%= get_metrics_from_git() %> -->
+
+# メトリックス
 
 <%= get_metrics_from_git() %>
+
 
 # Permissions
 
