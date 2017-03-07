@@ -1,44 +1,59 @@
 ---
-last_modified: 2015/07/05
-translation_status: translated
+last_modified: 2017/03/07
+translation_status: complete
 language: ja
-title: Datadog-Airbrake Integration
+title: Datadog-Airbrake インテグレーション
 integration_title: Airbrake
 kind: integration
-doclevel: complete
+doclevel: basic
+newhlevel: true
+git_integration_title: airbrake
 ---
-<!-- <div id="int-overview">
-<h2>Overview</h2>
-<p>Connect Airbrake to Datadog to:</p>
-<ul>
-  <li>See exceptions in the stream, in real time</li>
-  <li>Search for exceptions in your graphs</li>
-  <li>Discuss exceptions with your team</li>
-</ul>
-</div> -->
+<!--
+# Overview
+
+![Airbrake Event](/static/images/airbrakeevent.png)
+{: style='width: 500px;'}
+
+Connect Airbrake to Datadog to:
+
+  * See exceptions in the stream, in real time
+  * Search for exceptions in your graphs
+  * Discuss exceptions with your team
+  -->
 
 ## 概要
 
-AirbrakeとDatadogの連携
+![Airbrake Event](/static/images/airbrakeevent.png)
+{: style='width: 500px;'}
+
+Airbrake と Datadog の連携
 
 * リアルタイムで、例外をイベントストリームに表示します。
 * グラフ内で、例外を検索することが出来るようになります。
 * 例外に関して、イベントストリームでコミュニケーションを取ることが出来ます。
 
 
-<!-- <div id="int-configuration">
-<h2>Configuration</h2>
+<!-- # Configuration
 
-<p>Go to your Airbrake account page and copy your Account Name and Token into the form below.<br />
-You can either choose to follow all projects or specify a project name to follow.<br />
-If "All projects" box is ticked and a project name is specified, all projects will be followed.</p>
-</div> -->
+Go to your Airbrake account page and copy your Account Name and Token into the form below.
+You can either choose to follow all projects or specify a project name to follow.
+If "All projects" box is ticked and a project name is specified, all projects will be followed.
+ -->
 
 ## 設定
 
-Airbrakeの”account_name”ページから、アカウント名とトークンを取得し、インテグレーションタイル内のフォームにコピーします。
+Airbrake の ”account_name” ページから、アカウント名とトークンを取得し、インテグレーションタイル内のフォームにコピーします。
 
 ![](/static/images/ja-specific/snapshot_airbrake_small.png)
 
-特定のプロジェクトのみを連携することも出来ます。特定のプロジェクトだけをフォローする場合は、プロジェクト名を指定します。  
-全てのプロジェクトをフォローする場合、`All projects`にチェックマークを設定します。
+特定のプロジェクトのみを連携することも出来ます。特定のプロジェクトだけをフォローする場合は、プロジェクト名を指定します。
+全てのプロジェクトをフォローする場合、 `All projects` にチェックマークを設定します。
+
+<!-- # Metrics
+
+<%= get_metrics_from_git()%> -->
+
+# メトリクス
+
+<%= get_metrics_from_git()%>
