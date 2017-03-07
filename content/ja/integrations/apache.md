@@ -1,25 +1,27 @@
 ---
-last_modified: 2015/07/05
-translation_status: translated
+last_modified: 2017/03/07
+translation_status: complete
 language: ja
-title: Datadog-Apache Integration
+title: Datadog-Apache インテグレーション
 integration_title: Apache
 kind: integration
-doclevel: complete
+newhlevel: true
+git_integration_title: apache
 ---
-<!-- <div id="int-overview">
-<h3>Overview</h3>
 
-<p>Get metrics from Apache in real time; graph them and correlate them with other relevant system metrics and events.</p>
-<ul>
-  <li>Visualize your web server performance</li>
-  <li>Correlate the performance of Apache with the rest of your applications</li>
-</ul>
+<!-- # Overview
 
-</div> -->
+![Apache Graph](/static/images/apachegraph.png)
 
-### 概要と目的
-{: #int-overview}
+Get metrics from Apache in real time; graph them and correlate them with other relevant system metrics and events.
+
+  * Visualize your web server performance
+  * Correlate the performance of Apache with the rest of your applications
+-->
+
+# 概要
+
+![Apache Graph](/static/images/apachegraph.png)
 
 Apacheからリアルタイムでメトリクスを取得しグラフ化すると共に、他の関連したメトリクスやイベントと相互に関係付ける。
 
@@ -27,102 +29,113 @@ Apacheからリアルタイムでメトリクスを取得しグラフ化する�
 * Apacheのパフォーマンスをインフラに含まれる他のアプリケーションと相互に関連付けて把握する
 
 
-<!-- From the open-source Agent:
+<!-- # Installation
 
-* <a href="https://github.com/DataDog/integrations-core/blob/master/apache/conf.yaml.example">Apache YAML example</a>
-* <a href="https://github.com/DataDog/integrations-core/blob/master/apache/check.py">Apache checks.d</a> -->
+Make sure that [`mod_status`][3] is installed on your Apache server with `ExtendedStatus` set to `on` -->
 
-### Datadog Agentの関連ソールコードへのリンク
+# インストレーション
 
-* [Apache checks.d](https://github.com/DataDog/integrations-core/blob/master/apache/check.py)
-* [Apache YAML example](https://github.com/DataDog/integrations-core/blob/master/apache/conf.yaml.example)
+Apache サーバーに `mod_status` がインストールされ、`ExtendedStatus` が `on` に設定されていることを確認してください。
 
 
-<!-- The following metrics are collected by default with the Apache integration:
+<!-- # Configuration
 
-    apache.net.bytes
-    apache.net.bytes_per_s
-    apache.net.hits
-    apache.net.request_per_s
-    apache.performance.busy_workers
-    apache.performance.cpu_load
-    apache.performance.idle_workers
-    apache.performance.uptime -->
+*To capture Apache metrics you need to install the Datadog agent.*
 
-### 取得しているメトリクス
+1.  Configure the agent to connect to Apache. Edit `/etc/dd-agent/conf.d/apache.yaml`
 
-Apacheインテグレーションは、次のメトリクスをデフォルトで取得します:
+        init_config:
 
-    apache.net.bytes
-    apache.net.bytes_per_s
-    apache.net.hits
-    apache.net.request_per_s
-    apache.performance.busy_workers
-    apache.performance.cpu_load
-    apache.performance.idle_workers
-    apache.performance.uptime
+        instances:
+          - apache_status_url: http://example.com/server-status?auto
+            # apache_user: example_user
+            # apache_password: example_password
+            tags:
+              - instance:foo
+            disable_ssl_validation: true # if you want to disable SSL cert validation
+    {:.language-yaml}
 
+2. Restart the agent
 
-<!-- <div id="int-configuration">
-<h3>Configuration</h3>
- <p><em>To capture Apache metrics you need to install the Datadog agent.</em></p>
+        sudo datadog-agent restart
 
-<ol>
-  <li><b>Make sure that <a href="http://httpd.apache.org/docs/2.0/mod/mod_status.html"><code>mod_status</code></a> is installed on your Apache server</b> with <code>ExtendedStatus</code> set to <code>on</code></li>
-  <li>Configure the agent to connect to Apache<br>
-      Edit <code>/etc/dd-agent/conf.d/apache.yaml</code><br><br>
-        <pre class="textfile"><code>init_config:
-
-instances:
-    -   apache_status_url: http://example.com/server-status?auto
-        # apache_user: example_user
-        # apache_password: example_password
-        tags:
-            -   instance:foo
-    </code>
-</pre></li>
-
-  <li>Restart the agent
-        <pre class="linux"><code>sudo /etc/init.d/datadog-agent restart</code></pre>
-  </li>
-  <li> Verification:
-  <pre class="verification"><code>sudo /etc/init.d/datadog-agent info</code></pre>
-    </li>
-</ol>
-</div> -->
-
+<%= insert_example_links %> -->
 
 ### 設定
-{: #int-configuration}
 
-**Apacheのメトリクスを取得するには、Datadog Agentのインストールが必要です。**
-*詳細は、[Datadog Agent 入門](/ja/guides/basic_agent_usage/)を参照して下さい。*
+*Apache のメトリクスを取得するには、 Datadog Agent のインストールが必要です。詳細は、 [Datadog Agent 入門](/ja/guides/basic_agent_usage/)を参照して下さい。*
 
-1.**Apacheサーバに、[`mod_status`](http://httpd.apache.org/docs/2.0/mod/mod_status.html) がインストールされ**、そのモジュールが`ExtendedStatus`付きで有効化されていることを確認して下さい。
+1. Datadog Agent が Apache にアクセスしてメトリクスを収集するためには、 `/etc/dd-agent/conf.d/apache.yaml` を編集します。
 
-2.Apacheのメトリクスを取得するためにDatadog Agentの設定ファイル`/etc/dd-agent/datadog.conf`を次のように設定して下さい。(`mod_status`が、メトリクスを表示しているURLを指定します。)
+        init_config:
 
-  `/etc/dd-agent/datadog.conf`の編集例
+        instances:
+          - apache_status_url: http://example.com/server-status?auto
+            # apache_user: example_user
+            # apache_password: example_password
+            tags:
+              - instance:foo
+            disable_ssl_validation: true # if you want to disable SSL cert validation
+    {:.language-yaml}
 
-~~~
-init_config:
+2. Datadog Agent を再起動します。
 
-instances:
--   apache_status_url: http://example.com/server-status?auto
-# apache_user: example_user
-# apache_password: example_password
-tags:
-    -   instance:foo
-~~~
+        sudo datadog-agent restart
 
-3.`datadog.conf`の設定が完了したら、Datadog Agentを再起動します。
+<%= insert_example_links %>
 
-~~~
-sudo /etc/init.d/datadog-agent restart
-~~~
 
-4.次のコマンドで再起動の確認をします。
+<!-- # Validation
 
-~~~
-sudo /etc/init.d/datadog-agent info
-~~~
+To ensure the integration is installed correctly, run the agent info command.
+
+    sudo datadog-agent info
+
+You should see something similar to the following if everything is working correctly:
+
+    Checks
+    ======
+
+      [...]
+
+      apache
+      ------
+          - instance #0 [OK]
+          - Collected 8 metrics & 0 events -->
+
+# 動作確認
+
+インテグレーションが正しくインストールされていることを確認するには、次のコマンドを実行してください。
+
+    sudo datadog-agent info
+
+全てが正しくインストールされている場合は、次のようなインスタンスのステータスと集取できているメトリクスとイベントの項目数を確認することができます:
+
+    Checks
+    ======
+
+      [...]
+
+      apache
+      ------
+          - instance #0 [OK]
+          - Collected 8 metrics & 0 events
+
+
+<!-- # Metrics
+
+The following metrics are collected by default with the Apache integration:
+
+<%= get_metrics_from_git()%> -->
+
+# メトリックス
+
+Apache インテグレーションは、次のメトリクスをデフォルトで集取しています:
+
+<%= get_metrics_from_git()%>
+
+
+[1]: https://github.com/DataDog/integrations-core/blob/master/apache/conf.yaml.example
+[2]: https://github.com/DataDog/integrations-core/blob/master/apache/check.py
+[3]: http://httpd.apache.org/docs/2.0/mod/mod_status.html
+
