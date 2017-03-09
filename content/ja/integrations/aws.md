@@ -636,8 +636,6 @@ There are two important distinctions to be aware of:
 
 {:#tshoot-discrepancy}
 
-There are two important distinctions to be aware of:
-
 注意すべき重要な二つの違いがあります:
 
   1. AWS のカウンタ値は、'sum', '1minute' に設定されたグラフは、その時点までの過去一分間の総発生数、つまり一分あたりの発生率を示しています。 Datadog では、AWS からの生データを秒単位の値に正規化して表示しています。その結果、 Datadog の値が、 AWS 値より低くなっていることが多いです。
