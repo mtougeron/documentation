@@ -1,8 +1,8 @@
 ---
-last_modified: 2015/07/05
+last_modified: 2017/03/09
 translation_status: original
 language: ja
-title: Datadog-Campfire Integration
+title: Datadog-Campfire インテグレーション
 integration_title: Campfire
 kind: integration
 doclevel: basic
