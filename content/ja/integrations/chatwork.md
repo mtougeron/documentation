@@ -13,7 +13,10 @@ doclevel: basic
 * be notified when someone posts on your stream
 * be notified when a metric alert is triggered -->
 
-ChetWork サービスとのインテグレーション
+### 概要
+{:#int-overview}
 
-* アラートメッセージ内に ChatWork のチャネルが指定されている場、メッセージを送信する。
-* Datadog 上で、`@notation` で ChatWork 指定してメッセージをポスト場合に、チャネルにメッセージを送信する。
+次の目的で、ChatWork との連携をします:
+
+* アラートメッセージ内に ChatWork のチャネルが指定して、アラート発生時にメッセージを送信する。
+* Datadog 上で、`@notation` で ChatWork を指定してメッセージをポスト場合に、チャネルにメッセージを送信する。
