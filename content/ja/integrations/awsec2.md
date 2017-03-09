@@ -19,7 +19,7 @@ Enable this integration to see in Datadog all your EC2 metrics, and additional e
 
 Amazon Elastic Compute Cloud（Amazon EC2）は、クラウド上でサイズ変更可能な計算能力を提供するWebサービスです。 ウェブスを使ってケールするタイプのクラウド コンピューティングを、開発者が容易にできるように設計されています。
 
-このインテグレーションを有効にすると、 Datadog 内で EC2 のすべてのメトリクスと提起保守などの追加イベントが表示されるようになります。
+このインテグレーションを有効にすると、 Datadog 内で EC2 のすべてのメトリクスと予定されている保守などの追加イベントが表示されるようになります。
 
 
 <!-- # Installation
