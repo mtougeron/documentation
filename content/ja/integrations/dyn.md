@@ -1,11 +1,12 @@
 ---
-last_modified: 2015/06/30
+last_modified: 2017/03/10
 translation_status: complete
 language: ja
 title: Datadog-Dyn Integration
 integration_title: Dyn
 kind: integration
 doclevel: basic
+git_integration_title: dyn
 ---
 
 <!-- Monitor your zones with advanced graphs and events.
@@ -14,9 +15,17 @@ doclevel: basic
 * Analyze the QPS made by zone or record type thanks to advanced graphing tools -->
 
 ### 概要
-{:#int-overview}
 
 高度なグラフ機能とイベント機能によってゾーンを監視します。
 
 * ゾーンのアップデートが発生した際に、変更の内容を追跡します。
-* ゾーンかレコードタイプに基づいてQPS(Queries Per Second)を算出します。
+* ゾーンかレコード タイプに基づいて QPS (Queries Per Second) を算出します。
+
+
+<!-- ## Metrics
+
+<%= get_metrics_from_git() %> -->
+
+## Metrics
+
+<%= get_metrics_from_git() %>
