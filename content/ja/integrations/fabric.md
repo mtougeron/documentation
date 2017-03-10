@@ -1,5 +1,5 @@
 ---
-last_modified: 2015/07/05
+last_modified: 2017/03/19
 translation_status: complete
 language: ja
 title: Datadog-Fabric Integration
@@ -16,10 +16,9 @@ Connect Fabric to Datadog in order to:
 - Capture and search for deploy events in the event stream.
 - Correlate deploy events with metric changes on dashboards. -->
 
-### 概要
-{:#int-overview}
+# 概要
 
-次の目的の為に、FabricをDatadogと連携します:
+次の目的のために、 Fabric を Datadog と連携します:
 
-* イベントストリーム内で、デプロイに関するイベントを表示検索する為
-* ダッシュボード上で、デプロイに関するイベントとメトリクスの変化を同時に把握出来るようにする為
+* イベント ストリーム内で、デプロイに関するイベントを表示し検索できるようにする。
+* ダッシュボード上で、デプロイ イベントの発生タイミングを上書きし、メトリクスとの相関を把握できるようにする。
