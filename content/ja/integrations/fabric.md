@@ -2,7 +2,7 @@
 last_modified: 2017/03/19
 translation_status: complete
 language: ja
-title: Datadog-Fabric Integration
+title: Datadog-Fabric インテグレーション
 integration_title: Fabric
 kind: integration
 doclevel: basic
