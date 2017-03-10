@@ -22,7 +22,7 @@ Connect Airbrake to Datadog to:
   * Discuss exceptions with your team
   -->
 
-## 概要
+# 概要
 
 ![Airbrake Event](/static/images/airbrakeevent.png)
 {: style='width: 500px;'}
@@ -41,7 +41,7 @@ You can either choose to follow all projects or specify a project name to follow
 If "All projects" box is ticked and a project name is specified, all projects will be followed.
  -->
 
-## 設定
+# 設定
 
 Airbrake の ”account_name” ページから、アカウント名とトークンを取得し、インテグレーションタイル内のフォームにコピーします。
 
