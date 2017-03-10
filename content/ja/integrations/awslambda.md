@@ -33,7 +33,6 @@ print('MONITORING|{0}|{1}|{2}|{3}|#{4}'.format(
 
 Note: This integration requires the AWS permissions <code>logs:DescribeLogGroups</code>, <code>logs:DescribeLogStreams</code>, and <code>logs:FilterLogEvents</code> to be fully enabled. Also, counts and gauges are the only metrics types currently supported. -->
 
-
 ### 概要
 
 Amazon Lambda は、イベントの発生時にコードを実行し、そのコードで必要とされるコンピューティング リソースを自動的に管理してくれる AWS サービスです。
@@ -48,7 +47,7 @@ Amazon ファンクションから送信されるカスタム メトリクスを
 
 #### コード サンプル
 
-以下が、カスタム メトリックをログに出力するためのサンプル コードです( Python ):
+以下が、カスタム メトリックをログに出力するためのサンプル コードです (Python):
 
     unix_epoch_timestamp = int(time.time())
     value = 42
@@ -68,4 +67,4 @@ Amazon ファンクションから送信されるカスタム メトリクスを
 
 ### メトリクス
 
-<%= get_metrics_from_git()%> 
+<%= get_metrics_from_git()%>
