@@ -28,7 +28,7 @@ If you haven't already, set up the [Amazon Web Services integration first](/inte
 
 # インストール
 
-まだインストールしていない場合は、[Amazon Web Services integration first](/ja/integration/aws)を設定します。 これ以外の、インストール作業は必要ありません。
+まだ、Amazon Web Services インテグレーションをインストールしていない場合は、[リンク先の手順](/ja/integrations/aws)に従って設定を終わらせます。それ以外のインストール作業は、必要ありません。
 
 
 <!-- # Configuration
