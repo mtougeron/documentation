@@ -17,7 +17,7 @@ Connect Desk to Datadog to:
 * Visualize case stats by user and status
 * View trends in support tickets alongside DevOps issues -->
 
-## 概要
+# 概要
 
 次の目的の為に、DeskとDatadogを連携します:
 
@@ -36,7 +36,7 @@ Fill out the form as shown, leaving the latter two URL fields blank. Desk should
 Then from your Datadog account, enter the corresponding information on the [Desk tile][2]. You will also need to enter your company's unique Desk domain name.
 Hit the install button, and then you're all set! You will soon be able to select desk.* metrics on a custom dashboard or view them on the provided [Desk dashboard][3]. (You can also read about this integration on [our blog][4].) -->
 
-## 設定
+# 設定
 
 Desk のアカウントにログインし、 `Setting` -> `API` -> `My Application` ページと移動し、 API アプリケーションを追加します。(この操作には、管理者権限が必要です。)
 
@@ -55,7 +55,7 @@ Desk のインテグレーションに関しては、 blog 記事[「Keep suppor
 
 <%= get_metrics_from_git() %> -->
 
-## メトリクス
+# メトリクス
 
 <%= get_metrics_from_git() %>
 

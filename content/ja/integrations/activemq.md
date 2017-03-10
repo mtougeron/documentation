@@ -18,8 +18,7 @@ Get metrics from ActiveMQ in real time to
 * Correlate the performance of ActiveMQ with the rest of your applications
 -->
 
-## 概要
-{: #int-overview}
+# 概要
 
 ActiveMQy より、リアルタイムでメトリクスを取得します。
 
@@ -36,7 +35,7 @@ ActiveMQy より、リアルタイムでメトリクスを取得します。
 -->
 
 
-## 設定
+# 設定
 {: #int-configuration}
 **このインテグレーションでメトリクスを取得するには、 Linux もしくは Mac OS X 上で ActiveMQ が動作している必要があります。**
 
