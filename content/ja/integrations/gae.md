@@ -21,13 +21,13 @@ You can also send custom metrics to Datadog.
 
 # 概要
 
-次の目的で、Google App EngineインテグレーションをPythonプロジェクトに使用します:
+次の目的で、Google App Engine インテグレーションを Python プロジェクトに適応します:
 
-* Google App Engine サービスのメトリクス(memcache, task queues, datastores)を Datadog 上に表示する。
-* リクエストに関するメトリクスを表示する。(例: パーセンタイル, レイテンシ, コスト)
-* バージョン別に Google App Engine のメトリクスにタグを付け、異なるバージョンのパフォーマンスを比較する
+* Google App Engine サービスのメトリクス(例: memcache, task queues, datastore)を Datadog 上に表示する。
+* リクエストに関するメトリクス(例: パーセンタイル, レイテンシ, コスト)を Datadog 上に表示する。
+* バージョン毎に Google App Engine メトリクスにタグを付け、バージョン間のパフォーマンスを比較する。
 
-又、カスタムメトリクスを Datadog に送信することもできます。
+又、カスタム メトリクスを Datadog に送信することもできます。
 
 
 <!-- ### Installation
@@ -119,7 +119,7 @@ For Python apps, you might use the dogapi library. Here is the Getting Started F
 
 # インストール
 
-すべてのメトリックを収集するには、Google App Engine プロジェクトの設定で、請求を有効にしてください。
+すべてのメトリックを収集するには、Google App Engine プロジェクトの設定で、請求 (Billing) を有効にしてください。
 
 1. プロジェクトのアプリケーションディレクトリに移動します。
 
@@ -139,12 +139,12 @@ For Python apps, you might use the dogapi library. Here is the Getting Started F
             script: gae_datadog.datadog.app
     {: .lang-yaml}
 
-    b: API キーを設定します。 この項目は、設定ファイルの*最上位レベル*にあります。ハンドラセクションではありません。
+    b: API キーを設定します。 この項目は、設定ファイルの*最上位レベル*に記述する必要があります。ハンドラセクションではありません。
 
         env_variables:
           DATADOG_API_KEY: 'YOUR_API_KEY_HERE'
 
-    c: dogapi モジュールは、secure TLS 通信を介してメトリックとイベントを送信するため、 app.yaml に ssl モジュールを追加します。
+    c: dogapi モジュールは、secure TLS 通信を介して監視データを送信するため、 app.yaml に ssl モジュールを追加します。
 
         libraries:
           - name: ssl
@@ -158,16 +158,16 @@ For Python apps, you might use the dogapi library. Here is the Getting Started F
 
         pip install -r requirements.txt -t lib/
 
-6. アプリケーションをデプロイします。 言語ごとのデプロイメント コマンドについては、Google App Engineのマニュアルを参照してください。 Python アプリケーションの場合は、次のようになります。
+6. アプリケーションをデプロイします。 プログラミング言語ごとのデプロイメント コマンドについては、 Google App Engine のマニュアルを参照してください。 Python アプリケーションの場合は、次のようになります。
 
         appcfg.py -A <project id> update app.ya
 
 7. [インテグレーション タイル][1]の最初のテキストボックスに、アプリケーションの URL を入力します。 
 Google Developers Console でタスクキューを使用している場合は、その横のボックスに追加します。
 
-ここまでの作業で、基本的なメトリクスの集取が始まります。 更に、アプリを記述している言語用のライブラリを使用し、アプリケーションからカスタム メトリクスを送信することもできます。
+ここまでの作業で、基本的なメトリクスの集取が始まります。 更に、アプリを記述しているプログラミング言語用のライブラリを使用し、アプリケーション内からカスタム メトリクスを送信することもできます。
 
-Python アプリケーションの場合は、dogapi ライブラリを使用することができます。以下は、メイン ページにアクセスがあった際にカウンタをインクリメントし、定期的にその値を Datadog へ送信するように修正した Flask ベースの Python アプリケーションの例です。
+Python アプリケーションの場合は、dogapi ライブラリを使用することができます。以下は、 web ページのメイン ページにアクセスがあった際にカウンタをインクリメントし、定期的にその値を Datadog へ送信するようにコードを書き加えた Flask ベースの Python アプリケーションの例です。
 
     """`main` is the top level module for your Flask application."""
     import os
