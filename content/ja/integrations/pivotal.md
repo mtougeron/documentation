@@ -15,7 +15,7 @@ Capture Pivotal activity into Datadog to:
 * See and discuss the progress of each of your stories.
 * Correlate story completion with other events and metrics in your system. -->
 
-### 概要
+# 概要
 
 次の目的で、 Pivotal の動作状況を Datadog へ送信します:
 
