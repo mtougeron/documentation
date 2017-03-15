@@ -1,11 +1,11 @@
 ---
-last_modified: 2015/07/16
+last_modified: 2017/03/15
 translation_status: complete
 language: ja
 title: Datadog-Git Integration
 integration_title: Git
 kind: integration
-doclevel: complete
+doclevel: basic
 ---
 
 <!-- ### Overview
@@ -18,7 +18,6 @@ Capture Git commits directly from your Git server to:
 - Discuss code changes with your team. -->
 
 ### 概要
-{:#int-overview}
 
 次の目的で、GitサーバーからGitのコミット情報をDatadogと連携します:
 
