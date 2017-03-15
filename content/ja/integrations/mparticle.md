@@ -1,8 +1,8 @@
 ---
-last_modified: 2015/07/16
-translation_status: original
+last_modified: 2017/03/15
+translation_status: complete
 language: ja
-title: Datadog-mParticle Integration
+title: Datadog-mParticle インテグレーション
 integration_title: mParticle
 kind: integration
 doclevel: basic
@@ -15,8 +15,7 @@ doclevel: basic
 * Active Session Details
 * Device CPU, Memory, and Battery Utilization -->
 
-### 概要
-{:#int-overview}
+# 概要
 
 mParticleとDatadogを連携し、ダッシュボードにリアルタイムで以下の情報を表示できるようにします:
 
