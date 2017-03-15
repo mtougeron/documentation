@@ -1,8 +1,8 @@
 ---
-last_modified: 2015/07/02
+last_modified: 2017/03/15
 translation_status: complete
 language: ja
-title: Datadog-NodeJS Integration
+title: Datadog-NodeJS インテグレーション
 integration_title: NodeJS
 kind: integration
 doclevel: basic
@@ -14,8 +14,7 @@ doclevel: basic
 * Correlate their performance with the rest of your applications
 * Monitor any relevant metric -->
 
-### 概要
-{:#int-overview}
+# 概要
 
 次の目的で、Node.js アプリケーションのメトリクスをDatadogへ送信します:
 
