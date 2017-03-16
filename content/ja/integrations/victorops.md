@@ -1,11 +1,12 @@
 ---
-last_modified: 2015/07/17
+last_modified: 2017/03/16
 translation_status: complete
 language: ja
-title: Datadog-VictorOps Integration
+title: Datadog-VictorOps インテグレーション
 integration_title: VictorOps
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- Send Datadog alerts to VictorOps and gain fine-grained control over routing and escalation.
@@ -23,27 +24,25 @@ When a metric alert is triggered -->
 3. Copy your key
 4. Back to Datadog, paste the API key in the next section here -->
 
-### 概要
-{:#int-overview}
+# 概要
 
 VictorOpsと連携することで、Datadogで検知したアラートを、非常に高い制度での通知とエスカレーションを実現します。
 
-### 設定
-{:#int-setup}
+# 設定
 
-1. VictorOpsのサイトでインテグレーションの設定ページを表示します。
+1. VictorOps のサイトでインテグレーションの設定ページを表示します。
 
-2. 右側にあるメニューより"Datadog"を選択し、"Enable Integration"をクリックします。
+2. 右側にあるメニューより "Datadog" を選択し、 "Enable Integration" をクリックします。
 
     ![](/static/images//VO_settings.jpg)
 
-3. VictorOps APIキーをコピーします。
+3. VictorOps API キーをコピーします。
 
     ![](/static/images//VO_settings_2.jpg)
 
-4. DatadogのVictorOpsインテグレーションのポップアップ画面で、先にコピーしたAPIキーを記述します。
+4. Datadog の VictorOps インテグレーション タイルのポップ アップ画面で、先にコピーした API キーを入力します。
 
-5. Datadogの各Monitorのアラートの通知欄に @victorops を追記して、メッセージを記述しておきます。
+5. Datadog の各 Monitor のアラート メッセージに @victorops を併記して、メッセージを記述しておきます。
 
 
 <!-- # VictorOps Routing Keys
@@ -54,16 +53,28 @@ Please list all the routing keys to be used on Datadog (if none are set up here,
 You will then be able to choose which VictorOps endpoint should receive the alert by using @victorops
 
 Special characters are not allowed in the names. Upper/lower case letters, numbers, `_` and `-` are allowed.
+ -->
 
-# Choose a custom endpoint
+
+# VictorOps Routing Keys について
+
+VictorOps 上の特定のユーザに対してのアラートは、可能です。VictorOps 上の特定ユーザの "Routing Key" を、全て Datadog 側に設定しておいてください。(この指定がない場合は、 VictorOps は、デフォルト グループに対してアラートを通知します。)
+
+その後、 @victorops 構文を使って通知を受けるための VictorOps の endpoint を指定することができるようになります。
+
+使用可能な文字列は、大小文字英数、`_`と`-`が使用可能です。**それ以外の特殊文字は使うことができません。**
+
+
+<!-- # Choose a custom endpoint
 
 If this field is left empty, the default endpoint will be `https://alert.victorops.com/integrations/datadog/20140523/alert` -->
 
+# カスタム endpoint の選択
 
-### VictorOps Routing Keysについて
+このフィールドは、空のままの状態です。ディフォルトの endpoint は、`https://alert.victorops.com/integrations/datadog/20140523/alert` になります。
 
-#### VictorOps上の特定のユーザーに対してのアラート
 
-VictorOps上の特定ユーザーの"Routing Key"を、全てDatadog側に追加しておいてください。(もしもこの欄に指定がない場合は、VictorOpsは、デフォルトグループに対してアラートを通知します。)
 
-使用可能な文字列は、大小文字英数、`_`と`-`が使用可能です。**それ以外の特殊文字などは使用出来ません。**
+
+
+
