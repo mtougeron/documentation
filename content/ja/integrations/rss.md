@@ -6,6 +6,7 @@ title: Datadog-RSS インテグレーション
 integration_title: RSS
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- ### Overview
