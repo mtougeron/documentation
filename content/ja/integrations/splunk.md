@@ -6,6 +6,7 @@ title: Datadog-Splunk インテグレーション
 integration_title: Splunk
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- ### Overview
@@ -141,7 +142,7 @@ The script file uses variables made available by Splunk. If you would like to cu
 
 You can modify the text of the events by for example using datadog's @mention to notify people of these reports. -->
 
-### カスタマイズ
+# カスタマイズ
 
 スクリプト ファイルには、Splunk が準備している変数を使用することができます。メッセージのカスタマイズに使用でき変数に関しては、以下の表を参照してください:
 
