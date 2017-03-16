@@ -1,11 +1,12 @@
 ---
-last_modified: 2015/07/07
+last_modified: 2017/03/16
 translation_status: complete
 language: ja
-title: Datadog-Sentry Integration
+title: Datadog-Sentry インテグレーション
 integration_title: Sentry
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- Connect Sentry to Datadog to:
@@ -14,11 +15,10 @@ doclevel: basic
 * Search for exceptions in your graphs
 * Discuss exceptions with your team -->
 
-### 概要
-{:#int-overview}
+# 概要
 
-次の目的で、SentryをDatadogと連携します:
+次の目的で、 Sentry を Datadog と連携します:
 
-* イベントストリーム上にexceptions(例外)を表示します
-* ダッシュボード上のグラフでexceptions(例外)の検索を可能にする
-* イベントストリーム上で、チームメンバーとexceptions(例外)について検討する
+* イベントストリーム上に exceptions (例外)を表示します。
+* ダッシュボード上のグラフで exceptions (例外)の検索を可能にする。
+* イベントストリーム上で、チームメンバーと exceptions (例外)について検討する。
