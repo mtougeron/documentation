@@ -6,6 +6,7 @@ title: Datadog-OpsGenie インテグレーション
 integration_title: OpsGenie
 kind: integration
 autotocdepth: 2
+newhlevel: true
 ---
 
 <!-- ## Overview

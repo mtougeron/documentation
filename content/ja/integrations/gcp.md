@@ -6,6 +6,7 @@ title: Datadog-Google Cloud Platform インテグレーション
 integration_title: Google Cloud Platform
 kind: integration
 git_integration_title: google_cloud_platform
+newhlevel: true
 ---
 
 <!-- ### Overview

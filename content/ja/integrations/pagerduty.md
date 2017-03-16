@@ -6,6 +6,7 @@ title: Datadog-PagerDuty インテグレーション
 integration_title: PagerDuty
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- ### Overview
@@ -18,7 +19,7 @@ Connect PagerDuty to Datadog in order to:
 * Get a daily reminder of who's on-call -->
 
 
-### 概要
+# 概要
 
 次の目的の為に、 pagerduty のメトリクスを Datadog に送信します:
 

@@ -6,6 +6,7 @@ title: Datadog-Pivotal インテグレーション
 integration_title: Pivotal
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- ### Overview

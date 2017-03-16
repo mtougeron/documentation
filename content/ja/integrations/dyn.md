@@ -7,6 +7,7 @@ integration_title: Dyn
 kind: integration
 doclevel: basic
 git_integration_title: dyn
+newhlevel: true
 ---
 
 <!-- Monitor your zones with advanced graphs and events.

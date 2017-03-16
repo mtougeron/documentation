@@ -6,6 +6,7 @@ title: Datadog-mParticle インテグレーション
 integration_title: mParticle
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- Connect mParticle to Datadog and see the following information in real-time in your Datadog dashboard:

@@ -6,6 +6,7 @@ title: Datadog-Python インテグレーション
 integration_title: Python
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- # Overview

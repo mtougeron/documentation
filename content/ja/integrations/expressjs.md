@@ -7,6 +7,7 @@ integration_title: ExpressJS
 kind: integration
 doclevel: basic
 git_integration_title: express
+newhlevel: true
 ---
 
 <!-- Add the connect-datadog middleware to your application to:
@@ -14,7 +15,7 @@ git_integration_title: express
 * Alert on your response times
 * Monitor your response code -->
 
-## 概要
+# 概要
 
 次の目的のために、ExpressJS から取得したメトリクス を Datadog へ送信します:
 
@@ -26,6 +27,6 @@ git_integration_title: express
 
 <%= get_metrics_from_git() %> -->
 
-## メトリクス
+# メトリクス
 
 <%= get_metrics_from_git() %>

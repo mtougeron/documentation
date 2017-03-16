@@ -6,6 +6,7 @@ title: Datadog-NodeJS インテグレーション
 integration_title: NodeJS
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- Connect your Node.js applications to Datadog to:

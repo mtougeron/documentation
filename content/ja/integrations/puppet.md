@@ -6,6 +6,7 @@ title: Datadog-Puppet インテグレーション
 integration_title: Puppet
 doclevel: basic
 kind: integration
+newhlevel: true
 ---
 
 <!-- ### Overview

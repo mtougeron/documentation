@@ -6,6 +6,7 @@ title: Datadog-Chatwork インテグレーション
 integration_title: Chatwork
 kind: integration
 doclevel: basic
+newhlevel: true
 ---
 
 <!-- Integrate with ChatWork to:
@@ -13,7 +14,7 @@ doclevel: basic
 * be notified when someone posts on your stream
 * be notified when a metric alert is triggered -->
 
-### 概要
+# 概要
 {:#int-overview}
 
 次の目的で、ChatWork との連携をします:

@@ -6,6 +6,7 @@ title: Datadog-Github インテグレーション
 integration_title: Github
 kind: integration
 autotocdepth: 1
+newhlevel: true
 ---
 
 <!-- ### Overview
