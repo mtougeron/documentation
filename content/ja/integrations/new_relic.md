@@ -53,23 +53,27 @@ Connect to New Relic to:
 
 ## New Relic Alert をイベントストリームの表示
 
-1. On the Webhook tab of New Relic's alerting notification settings page, enter the following webhook URL:
+1. New Relic のアラート通知の設定ページで、Webhooks タブを選択し、以下の Webhooks URL を入力します:
+
 
         https://app.datadoghq.com/intake/webhook/newrelic?api_key={YOUR_DATADOG_API_KEY}
 
-2. For 'Custom Payload'(s), select JSON 'Payload Type'.
+2. カスタム ペイロードを送信する場合は、 'Payload Type' で JSON を選択してください。
 
-## New Relic APM Metric Collection
+## New Relic APM メトリクスの集取
 
-3. Locate your API key on New Relic's API Keys page (**Account Settings** -> **Integrations** -> **API Keys**) and enter it in the form on the [Datadog New Relic Integration](https://app.datadoghq.com/account/settings#integrations/new_relic) page.
+1. New Relic の API Key ページで API キーを特定します。(**Account Settings** -> **Integrations** -> **API Keys**)このキーを、Datadog サイトの [New Relic インテグレーション][1] タイルを表示して入力します。
 
-    *Note: Metrics can only be imported for New Relic customers at the Pro level or above.*
+    *注: New Relic APM のメトリクスは、 Pro レベル以上 顧客ステータスが必要です。*
 
-4. If you wish to tag metrics at an account level, please add an account tag.
-5. Choose whether you want to collect your metrics per hosts or app-wide.
+2. アカウント レベルでメトリクスにタグを付けたい場合は、アカウント タグを追加してください。
 
-    *Note: Enabling this options will import New Relic hosts to Datadog.*
+3. ホスト単位でメトリクスを収集するか、アプリ全体のメトリクスを収集するかを選択します。
 
+    *注: このオプションを有効にすると、 New Relic hosts が Datadog にインポートされます。*
+
+
+[1]: https://app.datadoghq.com/account/settings#integrations/new_relic
 
 <!-- # Metrics
 
@@ -193,9 +197,9 @@ You can include custom tags by utilizing the "Use Custom Payload" option through
 
 After your modifications are complete, make sure you select 'Update Chanel', for your changes to be saved. -->
 
-**Beta Alerts: How can I include custom tags?**
+**Beta Alerts: カスタム タグを含めることができますか?**
 
-You can include custom tags by utilizing the "Use Custom Payload" option through New Relic's Beta Alerts feature. To configure this, you'll navigate to your New Relic account, and click the 'Alerts Beta' button in the upper right-hand corner of the screen. From here, select the 'Notification channels' section and find the Webhook you've setup for Datadog. From here there should be a section called 'Use Custom Payload', and once selected, it will expand to reveal a JSON payload. You need to modify this payload by adding a "tags" attribute. For example, a modified payload might look like this:
+データへのカスタムタグの付与は、New Relic の Beta Alerts 機能のカスタム ペイロード オプションを使用することで実現できます。この機能を設定するには、 New Relic アカウントに移動し、画面の右上にある 'Alerts Beta' ボタンをクリックします。次に、 'Notification channels' セクションを選択し、Datadog 用の Webhooks を確認します。ここで 'Use Custom Payload' を選択すると、 JSON ペイロードが内容が表示されるようになります。このペイロードを変更するには、"tags" 属性を追加します。例えば、変更されたペイロードは次のようになります:
 
     {
       "account_id": "$ACCOUNT_ID",
@@ -218,4 +222,5 @@ You can include custom tags by utilizing the "Use Custom Payload" option through
       "tags": ["application:yourapplication", "host:yourhostname", "sometag"]
     }
 
-After your modifications are complete, make sure you select 'Update Chanel', for your changes to be saved.
+JSON の編集が完了したら、内容を保存するために 'Update Chanel' を必ず選択してください。
+
