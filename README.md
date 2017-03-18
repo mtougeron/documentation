@@ -69,21 +69,17 @@ An alternative to setting up the development environment as explained above is t
 
 ```
 # From within the documentation folder:
-# Build the docker image. This can take 15-20 minutes.
-docker build -f DockerfileDev -t dd-docs:latest .
-
-# Run the docker container.
 docker run -ti \
   -v $PWD:/docs \
   -p 3000:80 \
   -e github_personal_token=$github_personal_token \
-  dd-docs \
-  /bin/sh -c "nginx; rake clean && rake"
+  jyee/docker-dd-docs
 ```
 
-Note that the above command assumes you have set up your Github Personal Token as described earlier. If you have not, you should replace `$github_personal_token` with your token.
+The command above assumes you have set up your Github Personal Token as described earlier. If you have not, you should replace `$github_personal_token` with your token.
 
-Although Guard reports that it is watching for changes, it doesn't seem to update automatically and it will not live-reload your local browser. To start a rebuild, hit enter at the Guard prompt, then manually refresh the page in your browser.
+To compile the docs site, run `rake clean` and `rake compile`. Note that running the default `rake` task will start Guard, however Guard will not automatically compile the site when files change, nor is it needed to serve the docs site (that's handled by Nginx).
+
 
 # Working on Docs
 
