@@ -18,9 +18,9 @@ Enable this integration to see custom tags and metrics for your ES clusters in D
 
 # 概要
 
-Amazon Elasticsearch Service is a managed service that makes it easy to deploy, operate, and scale Elasticsearch in the AWS Cloud.
+Amazon Elasticsearch Service は、 AWS 上に Elasticsearch をデプロイし、運用し、必要に応じてスケールすることを容易にするための AWS の管理サービスです。
 
-Enable this integration to see custom tags and metrics for your ES clusters in Datadog
+このインテグレーションを有効にすることで、 Elasticsearch クラスタのメトリクスとカスタム タグを Datadog 上に表示できるようになります。
 
 
 <!-- # Installation
@@ -30,7 +30,7 @@ This integration requires the permissions `es:ListTags`, `es:ListDomainNames`  a
 
 # インストール
 
-This integration requires the permissions `es:ListTags`, `es:ListDomainNames`  and `es:DescribeElasticsearchDomains` to be fully enabled.
+このインテグレーションは、 IAM 設定で `es:ListTags`, `es:ListDomainNames`, `es:DescribeElasticsearchDomains` の権限を有効にする必要があります。
 
 
 <!-- # Metrics
