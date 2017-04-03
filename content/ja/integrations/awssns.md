@@ -1,22 +1,73 @@
 ---
-last_modified: 2015/07/02
+last_modified: 2017/04/03
 translation_status: complete
 language: ja
-title: Datadog-AWS SNS Integration
+title: Datadog-AWS SNS インテグレーション
 integration_title: AWS SNS
 kind: integration
-doclevel: basic
+newhlevel: true
+git_integration_title: amazon_sns
 ---
 
-<!-- Connect SNS to Datadog in order to:
+<!-- # Overview
+
+![SNS Dashboard](/static/images/snsdashboard.png)
+
+Connect SNS to Datadog in order to:
 
 * See SNS messages as events in your stream
 * Send alert and event notifications to SNS -->
 
-### 概要
-{:#int-overview}
+# Overview
 
-次の目的で、AWS SNS(Simple Notification Service)をDatadogと連携します:
+![SNS Dashboard](/static/images/snsdashboard.png)
 
-* Amazon SNSメッセージをイベントしてイベントスリームに表示する
-* Amazon SNSに対して、アラートとイベント通知ができるようにする
+Connect SNS to Datadog in order to:
+
+* See SNS messages as events in your stream
+* Send alert and event notifications to SNS
+
+
+<!-- # Installation
+
+## Receiving SNS Messages In the Event Stream
+
+1.  On the Topics section of the SNS Management console, select the desired topic and click Create Subscription
+1.  Select https and enter the following webhook url:
+
+        https://app.datadoghq.com/intake/webhook/sns?api_key=<API KEY> -->
+
+# Installation
+
+## Receiving SNS Messages In the Event Stream
+
+1.  On the Topics section of the SNS Management console, select the desired topic and click Create Subscription
+1.  Select https and enter the following webhook url:
+
+        https://app.datadoghq.com/intake/webhook/sns?api_key=<API KEY>
+
+
+<!-- # Configuration
+
+## Sending SNS Notifications from Datadog
+
+1.  Configure the AWS account that is associated with an SNS service on the AWS integration tile
+2.  Install the SNS integration
+3.  Datadog will detect your configured SNS topics and demonstrate the @ notifications you can use below (e.g., "@sns-topic-name") -->
+
+# Configuration
+
+## Sending SNS Notifications from Datadog
+
+1.  Configure the AWS account that is associated with an SNS service on the AWS integration tile
+2.  Install the SNS integration
+3.  Datadog will detect your configured SNS topics and demonstrate the @ notifications you can use below (e.g., "@sns-topic-name")
+
+<!-- # Metrics
+
+<%= get_metrics_from_git()%>
+ -->
+
+# Metrics
+
+<%= get_metrics_from_git()%>
