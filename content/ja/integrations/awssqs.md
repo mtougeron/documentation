@@ -2,7 +2,7 @@
 last_modified: 2017/04/03
 translation_status: complete
 language: ja
-title: Datadog-AWS SQS Integration
+title: Datadog-AWS SQS インテグレーション
 integration_title: AWS SQS
 kind: integration
 doclevel: basic
@@ -19,23 +19,19 @@ Amazon Simple Queue Service (SQS) is a fast, reliable, scalable, fully managed m
 Enable this integration to see all your SQS metrics in Datadog.
  -->
 
-# Overview
+# 概要
 
 ![SQS Dashboard](/static/images/sqsdashboard.png)
 
-Amazon Simple Queue Service (SQS) is a fast, reliable, scalable, fully managed message queuing service.
+Amazon Simple Queue Service (SQS) は、どのような規模であっても、分散型ソフトウェアコンポーネントやマイクロサービス間で確実に通信するための完全マネージド型メッセージキューイングサービスです。
 
-Amazon Simple Queue Service (SQS)は、高速、高い信頼性、高い拡張性を備えたメッセージキューサービスです
-。
+このインテグレーションを有効にすることで、Datadog 内で Amazon SQS から収集した情報を扱うことができるようになり、インフラ環境内の他のメトリクスやイベント情報と連携して、グラフに表示したり、アラートを設定することができるようになります。
 
-Enable this integration to see all your SQS metrics in Datadog.
-
-DatadogにすべてのAmazon SQS メトリクスを表示するには、このインテグレーションを有効にします。
 
 <!-- # Metrics
 
 <%= get_metrics_from_git() %> -->
 
-# Metrics
+# メトリクス
 
 <%= get_metrics_from_git() %>
