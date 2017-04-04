@@ -34,13 +34,13 @@ Related integrations include:
 
 # 概要
 
-Connect to Microsft Azure in order to:
+下記の目的で、Microsft Azure と Datadog 連携します:
 
-* Get metrics from Azure VMs with or without installing the Agent
-* Tag your Azure VMs with Azure-specific information (e.g. location)
-* Get metrics for other services: Application Gateway, App Service (Web & Mobile), Batch Service, Event Hub, IOT Hub, Logic App, Redis Cache, Server Farm (App Service Plan), SQL Database, SQL Elastic Pool, and Virtual Machine Scale Set
+* Agent のインストールの有無に関わらず、 Azure VM からメトリックを取得する。
+* Azure 固有の情報(VMのロケーションなど)を Azure VM にタグとして付与する。
+* VM 以外のサービスからメトリクスを収集する: Application Gateway, App Service (Web & Mobile), Batch Service, Event Hub, IOT Hub, Logic App, Redis Cache, Server Farm (App Service Plan), SQL Database, SQL Elastic Pool, Virtual Machine Scale Set
 
-Related integrations include:
+関連するインテグレーションには次のものが含まれます:
 
 | [App Service](/integrations/azure_app_services) | easy-to-use service for deploying and scaling web, mobile, API and business logic applications |
 | [Batch Service](/integrations/azure_batch) | managed task scheduler and processor |
@@ -55,7 +55,63 @@ Related integrations include:
 {:.table}
 
 
-# Installation
+<!-- # Installation
+
+Integrating Datadog with Microsoft Azure can be done via the Azure Command Line Interface or through the Azure portal
+
+## Integrating through the Azure CLI
+To integrate Datadog with Azure using the Azure Command Line Interface, make sure you have [Azure CLI installed][7]. 
+
+First, login to the Azure account you want to integrate with Datadog
+
+~~~~
+azure login
+~~~~
+
+Next, configure CLI to be in ARM (Azure Resource Manager) mode
+
+~~~~
+azure config mode arm
+~~~~
+
+Run the account show command and copy & paste the `Tenant ID` value into the form on the Azure setup tile under "Tenant Name"
+
+~~~~
+azure account show
+~~~~
+
+Create an Active Directory application using the format below.\\
+The `name`, `home-page`, and `identifiter-uris` will be NOT used in any way and are simply required as part of the setup process.\\
+The `password` you choose must be copy and pasted into the form on the Azure setup tile under "Client Secret"
+
+~~~~
+azure ad app create --name "DatadogAuth" --home-page "http://app.datadoghq.com" --identifier-uris "http://app.datadoghq.com" --password "SomePassword"
+~~~~
+
+Create a Service Principal using the `AppId` returned from the last command.\\
+Copy and paste this `AppId` into the form on the Azure setup tile under "Client ID"
+
+azure cli <0.10.2:
+
+~~~~
+azure ad sp create {app-id}
+~~~~
+
+azure cli >= 0.10.2:
+
+~~~~
+azure ad sp create -a {app-id}
+~~~~
+
+Grant the Service Principal the "Reader" role for the subscription you are interested in monitoring.\\
+Use the `Object Id` returned from the previous command to fill in `{object-Id}`
+`{subscription-Id}` is the azure subscription you would like to monitor, and is listed as `ID` in `azure account show` or through the portal
+
+~~~~
+azure role assignment create --objectId {object-Id} --roleName Reader --subscription {subscription-Id}
+~~~~ -->
+
+# インストール
 
 Integrating Datadog with Microsoft Azure can be done via the Azure Command Line Interface or through the Azure portal
 
@@ -112,13 +168,34 @@ azure role assignment create --objectId {object-Id} --roleName Reader --subscrip
 ~~~~
 
 
+<!-- ## Integrating through the Azure Portals
+
+1. The first step is <a href="#installation1">Getting your tenant name</a> and passing it to Datadog.
+2. The second step is <a href="#installation2">Creating a web application</a> in your Active Directory and passing the correct credentials to Datadog.
+3. The third step is <a href="#installation3">Giving this application read-access</a> to any subscriptions you would like to monitor. -->
+
 ## Integrating through the Azure Portals
+## Azure ポータルを使ってインテグレート
 
 1. The first step is <a href="#installation1">Getting your tenant name</a> and passing it to Datadog.
 2. The second step is <a href="#installation2">Creating a web application</a> in your Active Directory and passing the correct credentials to Datadog.
 3. The third step is <a href="#installation3">Giving this application read-access</a> to any subscriptions you would like to monitor.
 
+
+<!-- ### Getting your Tenant Name
+
+1. Navigate to [portal.azure.com][2]
+2. In the leftmost blade, select "Azure Active Directory"
+3. Under properties, copy the Directory ID Value
+
+    ![settings](/static/images/azure/Azure_tenant_name.png)
+
+4. Paste the ID under "Tenant Name" in the form on the Azure setup tile
+
+    ![settings](/static/images/azure/tenant_name_form.png) -->
+
 ### Getting your Tenant Name
+### テナント名を取得する
 
 1. Navigate to [portal.azure.com][2]
 2. In the leftmost blade, select "Azure Active Directory"
@@ -130,7 +207,8 @@ azure role assignment create --objectId {object-Id} --roleName Reader --subscrip
 
     ![settings](/static/images/azure/tenant_name_form.png)
 
-### Creating the Web Application
+
+<!-- ### Creating the Web Application
 
 1. Navigate to the "App Registrations" tab within your Azure Active Directory.
 2. Press "Add"
@@ -191,50 +269,103 @@ azure role assignment create --objectId {object-Id} --roleName Reader --subscrip
 Naviate to the [Azure VM Default Dashboard][6] to see this dashboard populate with your infrastructure's data
 
 Learn more about how to monitor Azure VM performance metrics with [our series of posts](https://www.datadoghq.com/blog/how-to-monitor-microsoft-azure-vms/). We detail the key performance metrics, how to collect them, and how to use Datadog to monitor Azure VMs.
+ -->
+
+### Creating the Web Application
+### Web アプリケーションを作成
+
+1. Navigate to the "App Registrations" tab within your Azure Active Directory.
+2. Press "Add"
+3. Enter a name and Sign-on URL for this app.
+  * These will NOT be used in any way and are simply required as part of the setup process.
+  * Leave Application "Type as Web app/ API"
+4. Press "Create"
+
+    ![settings](/static/images/azure/Azure_create_ad.png)
+
+5. Once it is created, select the App from the list of App Registrations
+6. Copy the "Application ID" and paste the value into "Client ID" in the form on the Azure setup tile
+
+    ![settings](/static/images/azure/Azure_client_id.png)
+
+    ![settings](/static/images/azure/client_id_form.png)
+
+7. For the same app, go to "All settings"
+8. Go to "Keys"
+9. Enter a new Client Secret key and press Save
+  * Make sure to note when the key will expire!
+10. When the Secret Key is shown, copy and paste it in "Client Secret" in the form on the Azure setup tile
+
+    ![settings](/static/images/azure/Azure_client_secret.png)
+
+    ![settings](/static/images/azure/client_secret_form.png)
+
+11. Click "Install Integration" to complete the application creation process -->
 
 
+<!-- ### Giving Read Permissions to the Application
 
-<!-- ### Configure Azure Monitoring -->
+1. Navigate to “Subscriptions” on the left hand menu
 
-# Azure監視機能の設定
+    ![settings](/static/images/azure/subscriptions_icon.png){:style="width:50%;"}
 
-<!-- Microsoft Azure supports both PaaS and IaaS (VM) services. Right now Datadog monitoring is tailored for IaaS services. But it can also be installed in worker and web roles. -->
+2. Click on the subscription you would like to monitor
+3. Click on "Access control (IAM)" in the lefthand menu
 
-Microsoft Azureは、PaaSのとIaaS(VM)の両方のサービスをサポートしています。現状Datadogの監視は、IaaSのサービスを主たる監視対象として調整されています。しかし、この監視をワーカープロセスやwebサーバまで広げることが出来ます。
+    ![settings](/static/images/azure/access_control_button.png){:style="width:50%;"}
 
+4. Click "Add"
 
-<!-- To setup Azure monitoring, go to [Azure integrations][1] and follow instructions on the page. -->
+    ![settings](/static/images/azure/add_user_button.png){:style="width:50%;"}
 
-Azureの監視を設定するには、[Azure integrations][1] に移動し、インストラクションタイルに表示される指示に従って下さい。
+5. Select “Reader” as a role
 
-<!-- #### Enable diagnostics -->
+    ![settings](/static/images/azure/reader_icon.png){:style="width:50%;"}
 
-## Diagnostics を有効にする。
+6. Search/select for the name of the Application you just created (i.e. Datadog Auth)
+7. Click Select
+8. Click OK
+9. Repeat this process for any other subscriptions you would like to monitor
+10. **Please note that Diagnostics must be enabled for ARM deployed VMs to collect metrics. <a href="#diagnostics">See the instructions below</a>**
 
-<!-- To enable agent-less monitoring, you must enable diagnostics. Right now this is only support by Windows based machines. To do this, first go to [Azure preview portal][2] then follow the instructions below. -->
+**In a few minutes, metrics from applications under that subscription will begin to appear!**
 
-Datadog Agentをインストールせずに監視するには、Azureのdiagnostics機能を有効にします。現状、この機能はWindowsベースのVMについてのみ対応しています。有効にするには、[Azureのポータル][2]に移動し、次のインストラクションに従って操作をします。
+![Azure VM Default Dashboard](/static/images/azure/azure_vm_screenboard.png)
+Naviate to the [Azure VM Default Dashboard][6] to see this dashboard populate with your infrastructure's data
 
-![](/static/images/azure_diag_manual.png)
+Learn more about how to monitor Azure VM performance metrics with [our series of posts](https://www.datadoghq.com/blog/how-to-monitor-microsoft-azure-vms/). We detail the key performance metrics, how to collect them, and how to use Datadog to monitor Azure VMs. -->
 
+### Giving Read Permissions to the Application
 
-<!-- After locating your VM:
+1. Navigate to “Subscriptions” on the left hand menu
 
-1. Click on the CPU percentage today panel to show metrics panel
-2. Click on Diagnostics
-3. Shift the switch to open
-4. Click OK to save your changes -->
+    ![settings](/static/images/azure/subscriptions_icon.png){:style="width:50%;"}
 
-VMを指定した後の手順:
+2. Click on the subscription you would like to monitor
+3. Click on "Access control (IAM)" in the lefthand menu
 
-1. "CPU percentage today"(現状のCPUのパーセンテージ)が表示されているパネルをクリックします。
-2. "Diagnostics"をクリックします。
-3. Statusスイッチを"ON"にします。
-4. "OK"をクリックして設定を保存します。
+    ![settings](/static/images/azure/access_control_button.png){:style="width:50%;"}
 
-<!-- Datadog only requires Basic metrics, network and web metrics as well as .Net metrics to function correctly. Un-check logs collection could save you some storage space. -->
+4. Click "Add"
 
-Datadogの監視が正しく動作するためには、"Basic metrics", "network and web metrics", ".Net metrics"を有効にする必要があります。更に、"logs collection"のチェックマークを外すことでストレージのスペースを節約することもできます。
+    ![settings](/static/images/azure/add_user_button.png){:style="width:50%;"}
+
+5. Select “Reader” as a role
+
+    ![settings](/static/images/azure/reader_icon.png){:style="width:50%;"}
+
+6. Search/select for the name of the Application you just created (i.e. Datadog Auth)
+7. Click Select
+8. Click OK
+9. Repeat this process for any other subscriptions you would like to monitor
+10. **Please note that Diagnostics must be enabled for ARM deployed VMs to collect metrics. <a href="#diagnostics">See the instructions below</a>**
+
+**In a few minutes, metrics from applications under that subscription will begin to appear!**
+
+![Azure VM Default Dashboard](/static/images/azure/azure_vm_screenboard.png)
+Naviate to the [Azure VM Default Dashboard][6] to see this dashboard populate with your infrastructure's data
+
+Learn more about how to monitor Azure VM performance metrics with [our series of posts](https://www.datadoghq.com/blog/how-to-monitor-microsoft-azure-vms/). We detail the key performance metrics, how to collect them, and how to use Datadog to monitor Azure VMs.
 
 
 <!-- ### Deploy agents -->
@@ -272,7 +403,7 @@ Azureのポータル](http://portal.azure.com)から、運用中のVMを選択�
 1. Follow the steps in the [Azure integrations][1] tile
 2. Manually deploy Agents by following the instructions <a href="/guides/azure/">here</a> -->
 
-### Deploy Agents
+# Deploy Agents
 
 1. Follow the steps in the [Azure integrations][1] tile
 2. Manually deploy Agents by following the instructions <a href="/guides/azure/">here</a>
@@ -286,7 +417,7 @@ View the specific metrics we collect for each Azure service integration:
 * [SQL Database](/integrations/azure_sql_database)
 * [Virtual Machine](/integrations/azure_vm) -->
 
-### メトリクス
+# メトリクス
 
 View the specific metrics we collect for each Azure service integration:
 
@@ -329,9 +460,9 @@ Your tenant name is also available from the URL after navigating to the [classic
 ![settings](/static/images/azure/azure_tenant_url.png)
 
 
-## Tenent name(テナント名)がわかりません。
+## Tenant name (テナント名)がわかりません。
 
-Tenent nameを知るためには、まず[Azureのポータル][4]へログインします。その後、スクリーンの左側にあるメニューからSETTINGS(設定)を探し、クリックします。赤枠で囲った部分がTenent name(テナント名)になります。
+Tenant name を知るためには、まず[Azureのポータル][4]へログインします。その後、スクリーンの左側にあるメニューからSETTINGS(設定)を探し、クリックします。赤枠で囲った部分が Tenant name (テナント名)になります。
 
 ![](/static/images/azure_tenent.png)
 
