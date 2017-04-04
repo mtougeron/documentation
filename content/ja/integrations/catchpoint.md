@@ -21,13 +21,13 @@ Connect Catchpoint and Datadog to:
 
 # 概要
 
-Catchpoint is a Digital Performance Analytics platform that gives you the power to deliver amazing user experiences.
+Catchpoint は、驚くようなユーザ エクスペリエンスを創造するために必要な基礎情報を提供してくれる Digital Performance Analytics プラットフォームです。
 
-Connect Catchpoint and Datadog to:
+以下の目的で、Catchpoint と Datadog を 連携します:
 
-* Configure comprehensive alerts in your event stream
-* Direct links to Analysis Charts in the Catchpoint Portal
-* Alert Type tags for easy filtering
+* イベント情報を基に総合的なアラートを設定する。
+* Catchpoint Portal の分析チャートへの直接リンクを通知に埋め込めるようにする。
+* Catchpoint らかのイベント情報にタグを付けて、フィルタリングを可能にする。
 
 
 <!-- # Installation
@@ -36,7 +36,8 @@ No installation is required. -->
 
 # インストール
 
-No installation is required.
+Agent などのインストールは、必要ありません。
+
 
 <!-- # Configuration
 
@@ -65,15 +66,15 @@ Catchpoint will now send any alerts directly to the Events stream in DataDog. --
 
 # 設定
 
-To get Catchpoint alerts into your stream, login into the Catchpoint Portal and goto Settings > API.
+Catchpoint のアラートをイベント ストリームに取り込むには、 Catchpoint Portal にログインし、`Settings` > `API` と遷移していきます。
 
-1. In the Alerts API select Enable
-1. Enter the DataDog Endpoint URL. You will also need the DataDog API Key which can be created in the DataDog portal.
-1. Set Status to Active
-1. Select Template for Format
-1. Add a new template
-1. Enter the template Name e.g. DataDog and set the Format to JSON.
-1. Use the following JSON Template and Save it.
+1. アラート API で "Enable" を選択します。
+2. DataDog Endpoint URL を入力します。更に、DataDog ポータルで作成した DataDog のAPI キーを入力します。
+3. Status を Active に設定します。
+4. フォーマット用のテンプレートを選択します。
+5. 新しいテンプレートを追加します。
+6. 追加したテンプレートの名前を入力します(例: DataDog)。テンプレートのフォーマットを JSON に設定します。
+7. 以下の JSON テンプレートを保存します。
 
     {:.language-json}
         {
@@ -85,8 +86,7 @@ To get Catchpoint alerts into your stream, login into the Catchpoint Portal and 
             "source_type_name": "catchpoint"
         }
 
-
-Catchpoint will now send any alerts directly to the Events stream in DataDog.
+ここまでの設定で Catchpoint は、全てのアラートを DataDog のイベント ストリームに直接送信するようになります。
 
 
 <!-- # Metrics
@@ -95,7 +95,7 @@ This integration does not include metrics at this time. -->
 
 # メトリクス
 
-This integration does not include metrics at this time.
+このインテグレーションは、メトリクスを集取していません。
 
 
 <!-- # Events
@@ -104,5 +104,4 @@ This integration will push Catchpoint events to your Datadog event stream. -->
 
 # イベント
 
-This integration will push Catchpoint events to your Datadog event stream.
-
+このインテグレーションは、 Catchpoint のイベントを、 Datadog のイベントストリームに送信します。
