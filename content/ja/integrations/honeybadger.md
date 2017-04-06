@@ -5,7 +5,6 @@ language: ja
 title: Datadog-Honeybadger インテグレーション
 integration_title: Honeybadger
 kind: integration
-doclevel: basic
 newhlevel: true
 git_integration_title: honey badger
 ---
@@ -25,12 +24,11 @@ Connect Honeybadger to Datadog to:
 
 次の目的で、 Honeybadger と Datadog を連携します:
 
-* リアルタイムで、エラーをイベント ストリームに表示する
-* エラーの発生タイミングを、グラフ上に上書き表示する
-* エラーに関して、チーム メンバーとイベント ストリーム上で話し合えるようにする
+* リアルタイムで、エラーをイベント ストリームに表示する。
+* エラーの発生タイミングを、グラフ上に上書き表示する。
+* エラーに関して、チーム メンバーとイベント ストリーム上で話し合えるようにする。
 
 ![Honeybadger Event](/static/images/honeybadgerevent.png)
-
 
 <!-- # Installation
 
@@ -41,34 +39,28 @@ To capture errors from Honeybadger:
 3.  Click on "Alerts & Integrations".
 4.  Select "Datadog" as a new integration.
 5.  Add your API key.
-6.  Save the integration.
-
-# Configuration
-
-Click the **Install Integration** button on the Honeybadger Integration Tile. configuration steps are required for this integration.
- -->
+6.  Save the integration.　-->
 
 # インストール
 
 Honeybadger からエラーを収集するには:
 
-1.  Open your Honeybadger project list.
-2.  Click on "Settings" for the project you want to monitor.
-3.  Click on "Alerts & Integrations".
-4.  Select "Datadog" as a new integration.
-5.  Add your API key.
-6.  Save the integration.
+1. Honeybadger 上のプロジェクト リストを表示します。
+2. 監視対象となるプロジェクトの "Settings" をクリックします。
+3. "Alerts & Integrations" をクリックします。
+4. "Datadog" を新しいインテグレーションとして選択します。
+5. API キーを入力します。
+6. インテグレーションの設定を保存します。
 
-1. Honeybadgerプロジェクトリストを開きます。
-2. 監視するプロジェクトの[設定]をクリックします。
-3. 「Alerts＆Integrations」をクリックします。
-4. 新しい統合として"Datadog"を選択します。
-5. APIキーを追加します。
-6. 統合を保存します。
 
+<!-- # Configuration
+
+Click the **Install Integration** button on the Honeybadger Integration Tile. configuration steps are required for this integration.
+ -->
 
 # 設定
 
-Click the **Install Integration** button on the Honeybadger Integration Tile. configuration steps are required for this integration.
+[Honeybadger インテグレーション タイル][1] で、 `configuration` タブをクリックします。タブ内の、インストラクションに従って Honeybadger 側の設定を済ませ、 **"Install Integration"** ボタンをクリックします。
 
-Honeybadger Integration Tileの** Install Integration **ボタンをクリックします。 この統合には設定手順が必要です。
+
+[1]: https://app.datadoghq.com/account/settings#integrations/honeybadger
