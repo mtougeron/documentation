@@ -1,5 +1,5 @@
 ---
-last_modified: 2017/04/04
+last_modified: 2017/04/06
 translation_status: complete
 language: ja
 title: Datadog-Honeybadger インテグレーション
@@ -23,12 +23,11 @@ Connect Honeybadger to Datadog to:
 
 # 概要
 
-Connect Honeybadger to Datadog to:
+次の目的で、 Honeybadger と Datadog を連携します:
 
-* See errors in the stream, in real time
-* Search for errors in your graphs
-* Discuss errors with your team
-* Be super awesome
+* リアルタイムで、エラーをイベント ストリームに表示する
+* エラーの発生タイミングを、グラフ上に上書き表示する
+* エラーに関して、チーム メンバーとイベント ストリーム上で話し合えるようにする
 
 ![Honeybadger Event](/static/images/honeybadgerevent.png)
 
@@ -51,7 +50,7 @@ Click the **Install Integration** button on the Honeybadger Integration Tile. co
 
 # インストール
 
-To capture errors from Honeybadger:
+Honeybadger からエラーを収集するには:
 
 1.  Open your Honeybadger project list.
 2.  Click on "Settings" for the project you want to monitor.
@@ -60,6 +59,16 @@ To capture errors from Honeybadger:
 5.  Add your API key.
 6.  Save the integration.
 
-# Configuration
+1. Honeybadgerプロジェクトリストを開きます。
+2. 監視するプロジェクトの[設定]をクリックします。
+3. 「Alerts＆Integrations」をクリックします。
+4. 新しい統合として"Datadog"を選択します。
+5. APIキーを追加します。
+6. 統合を保存します。
+
+
+# 設定
 
 Click the **Install Integration** button on the Honeybadger Integration Tile. configuration steps are required for this integration.
+
+Honeybadger Integration Tileの** Install Integration **ボタンをクリックします。 この統合には設定手順が必要です。
