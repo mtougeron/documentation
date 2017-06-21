@@ -11,12 +11,9 @@ taxonomies:
   example: "examples"
 preserveTaxonomyNames: true
 
-permalinks:
-  ja: "/:slug/"
-
 # language
 defaultContentLanguage: "en"
-defaultContentLanguageInSubdir: false
+defaultContentLanguageInSubdir: true
 languages:
   en:
     weight: 0
