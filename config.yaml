@@ -11,14 +11,14 @@ taxonomies:
   example: "examples"
 preserveTaxonomyNames: true
 
+permalinks:
+  ja: "/:slug/"
+
 # language
 defaultContentLanguage: "en"
 defaultContentLanguageInSubdir: false
-
 languages:
   en:
-    #languageName: "English"
-    #languageCode: "en-US"
     weight: 0
     menu:
       main_references:
