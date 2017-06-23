@@ -50,7 +50,7 @@ pre-build: source-helpers  ## gulp tasks; gather external content & data
 source-helpers: hugpython  ## source the helper functions used in build, test, deploy.
 	@find ${LOCALBIN}/*  -type f -exec cp {} ${EXEDIR} \;
 
-start: stop pre-build  ## start the gulp/hugo server
+start: pre-build  ## start the gulp/hugo server
 	@echo "starting gulp and hugo servers..."
 	@gulp watch &>/dev/null & \
 	hugo server --renderToDisk &>/dev/null &
@@ -62,26 +62,23 @@ stop:  ## stop the gulp/hugo server
 	@pkill -x gulp || true
 	@pkill -x hugo server --renderToDisk || true
 
-test:  ## test a build.
-	@source ${VIRENV}/bin/activate; \
-	make test-images; \
-	make test-links; \
+tests:  start  ## test a build.
+	make start
+	make test-images
+	make test-links
 	make test-static
 
 test-images:
-	make start
-	@check_links.py "images" -p 15 -f "`cat ${ARTIFACT_NAME}/digest.txt`" -d "${URL}" --check_all "True" \
+	@source ${VIRENV}/bin/activate; \
+	check_links.py "images" -p 15 -f "`cat ${ARTIFACT_NAME}/digest.txt`" -d "${URL}" --check_all "True" \
     	--verbose "True" --src_path "`pwd/${${ARTIFACT_NAME}}`" --external "True" --timeout 1;
-	make clean-build
 
 test-links:
-	make start
-	@check_links.py "links" -p 15 -f "`cat ${ARTIFACT_NAME}/digest.txt`" -d "${URL}" --check_all "True" \
+	@source ${VIRENV}/bin/activate; \
+	check_links.py "links" -p 15 -f "`cat ${ARTIFACT_NAME}/digest.txt`" -d "${URL}" --check_all "True" \
     	--verbose "True" --src_path "`pwd/${${ARTIFACT_NAME}}`" --external "True" --timeout 1;
-	make clean-build
 
 test-static:
-	make start
-	@check_links.py "static" -p 15 -f "`cat ${ARTIFACT_NAME}/digest.txt`" -d "${URL}" --check_all "True" \
+	@source ${VIRENV}/bin/activate; \
+	check_links.py "static" -p 15 -f "`cat ${ARTIFACT_NAME}/digest.txt`" -d "${URL}" --check_all "True" \
    		--verbose "True" --src_path "`pwd/${${ARTIFACT_NAME}}`" --external "True" --timeout 1;
-	make clean-build
