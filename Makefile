@@ -1,4 +1,4 @@
-.PHONY: help clean-build clean-exe clean-venv hugpython hugpython/bin/activate source-helpers
+.PHONY: clean clean-build clean-exe clean-venv help pre-build source-helpers start stop tests test-images test-links test-static
 .DEFAULT_GOAL := help
 LOCALBIN = gitlab/bin
 LOCALETC = gitlab/etc
