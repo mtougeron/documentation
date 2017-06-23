@@ -46,7 +46,7 @@ hugpython/bin/activate: gitlab/etc/requirements3.txt  ## start python virtual en
 
 pre-build: source-helpers  ## gulp tasks; gather external content & data.
 	@gulp build --silent; \
-	if [ ${FETCH_INTEGRATIONS} == true ]; then integrations_sync --token ${GITHUB_TOKEN} || true; fi; \
+	if [ ${FETCH_INTEGRATIONS} == true ]; then integrations_sync --token ${github_personal_token} || true; fi; \
 	placehold_translations.py -c "config.yaml" -f "content/";
 
 source-helpers: hugpython  ## source the helper functions used in build, test, deploy.
