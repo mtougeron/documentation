@@ -70,4 +70,4 @@ Temporary Items
 *.css.map
 
 # virtual env
-hugpython
+hugpython/

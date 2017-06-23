@@ -1,60 +1,87 @@
-.PHONY: help
+.PHONY: help clean-build clean-exe clean-venv hugpython hugpython/bin/activate source-helpers
 .DEFAULT_GOAL := help
-EXEDIR=/usr/local/bin/hugexecs
-EXE_LIST=`find gitlab/bin -type f -exec basename {} \;`
-VIRENV=hugpython
+LOCALBIN = gitlab/bin
+LOCALCONFIG = gitlab/etc
+EXEDIR = /usr/local/bin
+EXE_LIST = `find gitlab/bin -type f -exec sh -c "echo ${EXEDIR}/{} | sed s@${LOCALBIN}/@@" \;`
+VIRENV = hugpython
+CONFIG = "config.yaml"
+ARTIFACT_NAME = "public"
+URL = "http://localhost:1313/"
+CI_ENVIRONMENT_NAME = "local"
 
 help:
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-25s\033[0m %s\n", $$1, $$2}'
 
-build: clean-build source-helpers ## digest and build a hugo site.
-	source $(VIRENV)/bin/activate; \
-	version_static.sh \
-	fetch_integrations
-	$(EXEDIR)/py/placehold_translations.py -c "config.yaml" -f "content/";
-	# gulp_tasks
-	# build_hugo
-	digest_site.sh \
+build: pre-build  ## digest and build a hugo site.
+	hugo --config=${CONFIG};
+	make public/digest.txt
 
-
-clean:  ## clean the local files for a release.
+clean:  ## clean all make installs.
 	make clean-build
 	make clean-exe
 	make clean-venv
 
 clean-build:  ## remove build artifacts.
-	if [ -d public ]; then rm -r public; fi
+	@if [ -d public ]; then rm -r public; fi
 
 clean-exe:  ## remove execs.
-	if [ -d $(VIRENV) ]; then rm -rf $(VIRENV); fi
+	@rm -rf ${EXE_LIST}
 
 clean-venv:  ## remove python virtual env.
-	rm -rf $(EXE_LIST)
+	@if [ -d ${VIRENV} ]; then rm -rf $(VIRENV); fi
 
-config: ## make sure all the configs are set
-	pass
-
-deploy: build test  ## deploy a tested build.
-	source $(VIRENV)/bin/activate
-	collect_static
-	create_artifact
-	push_site
-	push_artifact
-	tag_successful_deployment
+public/digest.txt:
+	@find ${ARTIFACT_NAME} -name '*.html' -type f -exec grep -vl 'http-equiv="refresh"' {} /dev/null \; | \
+        sed -ne "s@${ARTIFACT_NAME}@.$(pwd)/${ARTIFACT_NAME}@p" | \
+        cat > ${ARTIFACT_NAME}/digest.txt
 
 hugpython: hugpython/bin/activate
 
 hugpython/bin/activate: gitlab/etc/requirements3.txt  ## start python virtual environment.
-	export VIRTUALENVWRAPPER_PYTHON=/usr/bin/env python3
-	test -d $(VIRENV) || virtualenv $(VIRENV)
-	$(VIRENV)/bin/pip install -Ur gitlab/etc/requirements3.txt
+	@export VIRTUALENVWRAPPER_PYTHON=/usr/bin/env python3
+	@test -d ${VIRENV} || virtualenv ${VIRENV}
+	@$(VIRENV)/bin/pip install -r gitlab/etc/requirements3.txt
+
+pre-build: source-helpers  ## gulp tasks; gather external content & data
+	@gulp build --production; \
+	placehold_translations.py -c "config.yaml" -f "content/";
 
 source-helpers: hugpython  ## source the helper functions used in build, test, deploy.
-	[ -d $(EXEDIR) ] || mkdir -p $(EXEDIR)
-	cp -r gitlab/bin/* $(EXEDIR)
+	@find ${LOCALBIN}/*  -type f -exec cp {} ${EXEDIR} \;
 
-test: build  ## test a build.
-	source $(VIRENV)/bin/activate
-	test_images
-	test_links
-	test_static
+start: stop pre-build  ## start the gulp/hugo server
+	@echo "starting gulp and hugo servers..."
+	@gulp watch &>/dev/null & \
+	hugo server --renderToDisk &>/dev/null &
+	@echo "gulp and hugo started. 'make stop' to kill."
+	make public/digest.txt
+
+stop:  ## stop the gulp/hugo server
+	@echo "killing gulp and hugo..."
+	@pkill -x gulp || true
+	@pkill -x hugo server --renderToDisk || true
+
+test:  ## test a build.
+	@source ${VIRENV}/bin/activate; \
+	make test-images; \
+	make test-links; \
+	make test-static
+
+test-images:
+	make start
+	@check_links.py "images" -p 15 -f "`cat ${ARTIFACT_NAME}/digest.txt`" -d "${URL}" --check_all "True" \
+    	--verbose "True" --src_path "`pwd/${${ARTIFACT_NAME}}`" --external "True" --timeout 1;
+	make clean-build
+
+test-links:
+	make start
+	@check_links.py "links" -p 15 -f "`cat ${ARTIFACT_NAME}/digest.txt`" -d "${URL}" --check_all "True" \
+    	--verbose "True" --src_path "`pwd/${${ARTIFACT_NAME}}`" --external "True" --timeout 1;
+	make clean-build
+
+test-static:
+	make start
+	@check_links.py "static" -p 15 -f "`cat ${ARTIFACT_NAME}/digest.txt`" -d "${URL}" --check_all "True" \
+   		--verbose "True" --src_path "`pwd/${${ARTIFACT_NAME}}`" --external "True" --timeout 1;
+	make clean-build

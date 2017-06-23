@@ -42,10 +42,10 @@ func get_integration(integration string, integration_path string) string {
 		}
 
 		type Metric struct {
-			Metric_name string `json:"metric_name"`
-			Metric_type string `json:"metric_type"`
-			Interval    string `json:"interval"`
-			Unit_name   string `json:"unit_name"`
+			Metric_name   string `json:"metric_name"`
+			Metric_type   string `json:"metric_type"`
+			Interval      string `json:"interval"`
+			Unit_name     string `json:"unit_name"`
 			Per_Unit_name string `json:"per_unit_name"`
 			Description   string `json:"description"`
 		}
@@ -81,6 +81,8 @@ func get_integration(integration string, integration_path string) string {
 
 		d1 := []byte(y)
 		ioutil.WriteFile("data/integrations/"+integration+".yaml", d1, 0644)
+
+	}
 	return string(buffer.String())
 
 }
@@ -194,10 +196,10 @@ func parse_csv_to_yaml(integration string, csv_file string) {
 	}
 
 	type Metric struct {
-		Metric_name string `json:"metric_name"`
-		Metric_type string `json:"metric_type"`
-		Interval    string `json:"interval"`
-		Unit_name   string `json:"unit_name"`
+		Metric_name   string `json:"metric_name"`
+		Metric_type   string `json:"metric_type"`
+		Interval      string `json:"interval"`
+		Unit_name     string `json:"unit_name"`
 		Per_Unit_name string `json:"per_unit_name"`
 		Description   string `json:"description"`
 	}
@@ -474,7 +476,7 @@ func main() {
 			}
 		}
 
-	}else {
+	} else {
 
 		integration_folder_exists, _ := exists(flag_integrations_core)
 		if integration_folder_exists == false {
