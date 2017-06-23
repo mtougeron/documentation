@@ -13,7 +13,7 @@ import (
 	"golang.org/x/oauth2"
 	"io"
 	"io/ioutil"
-	"log"
+	//"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -36,10 +36,7 @@ func get_integration(integration string, integration_path string) string {
 
 		dat, err := os.Open(integrations_core_dir + "/" + integration + "/metadata.csv")
 
-		if err != nil {
-			fmt.Println(err)
-			fmt.Println("error here")
-		}
+		check(err)
 
 		type Metric struct {
 			Metric_name   string `json:"metric_name"`
@@ -51,9 +48,7 @@ func get_integration(integration string, integration_path string) string {
 		}
 
 		csvcontent, err := csv.NewReader(dat).ReadAll()
-		if err != nil {
-			log.Fatal(err)
-		}
+		check(err)
 
 		metrics := []Metric{}
 
@@ -74,10 +69,7 @@ func get_integration(integration string, integration_path string) string {
 		res1a, _ := json.MarshalIndent(data, "", "   ")
 
 		y, rerr := yaml.JSONToYAML(res1a)
-		if rerr != nil {
-			fmt.Printf("err: %v\n", rerr)
-
-		}
+		check(rerr)
 
 		d1 := []byte(y)
 		ioutil.WriteFile("data/integrations/"+integration+".yaml", d1, 0644)
@@ -186,11 +178,17 @@ func exists(path string) (bool, error) {
 
 func parse_csv_to_yaml(integration string, csv_file string) {
 
+	_, err := exists(csv_file)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	dat, err := os.Open(csv_file)
 
 	if err != nil {
 
-		fmt.Println(err)
+		fmt.Println("Open file error", integration, err)
 		os.Exit(1)
 
 	}
@@ -212,6 +210,8 @@ func parse_csv_to_yaml(integration string, csv_file string) {
 		if i == 0 {
 			continue
 		}
+		//fmt.Println(col)
+		//fmt.Println("In loop")
 		m := Metric{col[0], col[1], col[2], col[3], col[4], col[5]}
 
 		metrics = append(metrics, []Metric{m}...)
@@ -271,10 +271,7 @@ func main() {
 
 		ref, _, err := client.Git.GetRefs(ctx, "DataDog", flag_repo_name, "refs/heads/master")
 
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+		check(err)
 
 		repo_tar, _, err := client.Repositories.GetArchiveLink(
 			ctx, "DataDog", flag_repo_name, github.Zipball, newopt)
@@ -291,14 +288,9 @@ func main() {
 		bytes := []byte(json_str)
 
 		var p github.Reference
-		err2 := json.Unmarshal(bytes, &p)
-		if err2 != nil {
-			panic(err2)
-		}
+		un_marshal_err := json.Unmarshal(bytes, &p)
 
-		if err != nil {
-			fmt.Println(err)
-		}
+		check(un_marshal_err)
 
 		clean_download_url := strings.Split(repo_tar.String(), "?")
 		fmt.Printf("Downloading master from %s \n", clean_download_url[0])
@@ -311,10 +303,7 @@ func main() {
 
 		zip_err := Unzip(file, pwd)
 
-		if zip_err != nil {
-			fmt.Println(zip_err)
-			os.Exit(1)
-		}
+		check(zip_err)
 
 		private_repo_folder := "Datadog-" + repo_name + "-" + *p.Object.SHA
 
@@ -353,10 +342,10 @@ func main() {
 
 		os.RemoveAll(private_repo_folder)
 		os.RemoveAll("dogweb.zip")
-
+		os.Exit(0)
 	}
 
-	if flag_integrations_core == "" {
+	if flag_integrations_core == "" && token == "" {
 
 		fmt.Println("Integrations folder path not set, downloading repo")
 
@@ -364,19 +353,15 @@ func main() {
 
 		repos, _, err := client.Repositories.Get(ctx, "DataDog", "integrations-core")
 
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+		check(err)
 
 		ref, _, err := client.Git.GetRefs(ctx, "DataDog", "integrations-core", "refs/heads/master")
 
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+		check(err)
 
 		repo_tar, _, err := client.Repositories.GetArchiveLink(ctx, "DataDog", "integrations-core", github.Zipball, newopt)
+
+		check(err)
 
 		repo_name := repos.GetName()
 
@@ -390,14 +375,8 @@ func main() {
 		bytes := []byte(json_str)
 
 		var p github.Reference
-		err2 := json.Unmarshal(bytes, &p)
-		if err2 != nil {
-			panic(err2)
-		}
-
-		if err != nil {
-			fmt.Println(err)
-		}
+		int_core_unmarshall_err := json.Unmarshal(bytes, &p)
+		check(int_core_unmarshall_err)
 
 		fmt.Printf("Downloading master from %s \n", repo_tar)
 
@@ -409,10 +388,7 @@ func main() {
 
 		zip_err := Unzip(file, pwd)
 
-		if zip_err != nil {
-			fmt.Println(zip_err)
-			os.Exit(1)
-		}
+		check(zip_err)
 
 		ddintfolder, err := filepath.Glob("DataDog-integrations-core-*")
 
@@ -430,9 +406,7 @@ func main() {
 				}
 
 				if matched {
-
 					integration := strings.Split(path, "/")
-
 					parse_csv_to_yaml(integration[1], pwd+"/"+path)
 
 				}
@@ -444,39 +418,9 @@ func main() {
 		os.RemoveAll(ddintfolder[0])
 		os.RemoveAll("integrations-core.zip")
 
-		_, dirContent, _, err := client.Repositories.GetContents(ctx, "DataDog", "integrations-core", "/", newopt)
+	}
 
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		for _, int_file := range dirContent {
-			if *int_file.Type == "dir" {
-
-				_, folderContent, _, _ := client.Repositories.GetContents(ctx, "DataDog", "integrations-core", "/"+*int_file.Path, newopt)
-
-				for _, file := range folderContent {
-
-					if *file.Name == "metadata.csv" {
-
-						integration := strings.Split(*file.Path, "/")
-
-						file, err := http.Get(*file.DownloadURL)
-
-						if err != nil {
-							fmt.Println(err)
-							os.Exit(1)
-						}
-
-						responseData, _ := ioutil.ReadAll(file.Body)
-
-						parse_csv_to_yaml(integration[0], string(responseData))
-					}
-				}
-			}
-		}
-
-	} else {
+	if flag_integrations_core != "" && token == "" {
 
 		integration_folder_exists, _ := exists(flag_integrations_core)
 		if integration_folder_exists == false {
@@ -509,7 +453,7 @@ func main() {
 
 			return nil
 		})
-
+		os.Exit(0)
 	}
 
 }
