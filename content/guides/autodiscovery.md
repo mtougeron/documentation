@@ -1,7 +1,7 @@
 ---
 title: Using Autodiscovery with Docker
 kind: guide
-listorder: 10
+listorder: 15
 ---
 
 <div class="alert alert-info">
@@ -54,7 +54,7 @@ If you use Docker Swarm, run the following command on one of your manager nodes:
 
 Otherwise, see the docker-dd-agent documentation for detailed instructions and a comprehensive list of supported [environment variables](https://github.com/DataDog/docker-dd-agent#environment-variables).
 
-Note that **if you want the Agent to autodiscover JMX-based checks, you MUST**: 
+Note that **if you want the Agent to autodiscover JMX-based checks, you MUST**:
 
 1. Use the `datadog/docker-dd-agent:latest-jmx` image. This image is based on `latest`, but it includes a JVM, which the Agent needs in order to run [jmxfetch](https://github.com/DataDog/jmxfetch).
 1. Pass the environment variable `SD_JMX_ENABLE=yes` when starting `datadog/docker-dd-agent:latest-jmx`.
@@ -164,7 +164,7 @@ Note that the option to enable Autodiscovery is called `service_discovery_backen
 
 ---
 
-With the key-value store enabled as a template source, the Agent looks for templates under the key `/datadog/check_configs`. Autodiscovery expects a key-value hierarchy like this: 
+With the key-value store enabled as a template source, the Agent looks for templates under the key `/datadog/check_configs`. Autodiscovery expects a key-value hierarchy like this:
 
 ~~~
 /datadog/
